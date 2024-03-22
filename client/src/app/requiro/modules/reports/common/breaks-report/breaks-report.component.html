@@ -1,0 +1,66 @@
+<div class="mat-elevation-z8">
+  <mat-card>
+    <mat-form-field *ngIf="_users && supervisorView">
+      <mat-select placeholder="Agente" [(ngModel)]="selectedUserId">
+        <mat-option [value]="u.id" *ngFor="let u of _users">{{u.firstname}} {{u.lastname}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput [matDatepicker]="picker" [(ngModel)]="dateFrom" placeholder="Fecha desde" [formControl]="dateFromCtrl">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput [matDatepicker]="dateToPicker" [(ngModel)]="dateTo" placeholder="Fecha hasta" [formControl]="dateToCtrl">
+      <mat-datepicker-toggle matSuffix [for]="dateToPicker"></mat-datepicker-toggle>
+      <mat-datepicker #dateToPicker></mat-datepicker>
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="searchBreaks()" *ngIf="dateFromCtrl.status !== 'INVALID' && dateToCtrl.status !== 'INVALID'">Enviar</button>
+    <button mat-raised-button color="primary" *ngIf="dateFromCtrl.status === 'INVALID' || dateToCtrl.status === 'INVALID'" disabled>Enviar</button>
+
+
+    <button mat-raised-button (click)="exportCSV()" [disabled]="!breaks||breaks.length==0">
+      Exportar a CSV
+      <i class="material-icons"> trending_up </i>
+    </button>
+
+    <div [hidden]="breaks && breaks.length==0">
+      <div fxLayout="column" style="margin:4px;">
+        <fury-scrollbar class="dashboard" furyPage furyPagePadding fxLayout="column">
+          <div furyScrollbar #contentScroll style="max-height: 450px;">
+            <mat-table #table [dataSource]="dataSource" matSort class="table table-condensed">
+              <ng-container matColumnDef="date">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Fecha </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{ element.date | date :'dd/MM/yyyy HH:mm'}}Hs </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="idUser">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Agente </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{ getNameByUserId(element.idUser) }}</mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="idTypeBreak">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Tipo </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{getBreakTypeNameById(element.idTypeBreak)}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="init">
+                <mat-header-cell *matHeaderCellDef> Evento </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.init?'Inicio':'Fin'}} </mat-cell>
+              </ng-container>
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+            <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" [showFirstLastButtons]="true">
+            </mat-paginator>
+          </div>
+        </fury-scrollbar>
+        <div style="margin-top: 25px;">
+          <div *ngFor="let tt of totalTimeBreakByType" style="margin-bottom: 5px;"> {{tt.type}} : {{tt.time}} </div>
+          <mat-divider style="width: 300px;"></mat-divider>
+          <br/> Total : {{totalTimeBreak}}
+        </div>
+      </div>
+    </div>
+    <div fxLayout="column" style="margin:4px;" *ngIf="breaks &&  breaks.length === 0" style="margin-top: 50px;width: 100%; text-align: center;">
+      <span class="mat-display-1" style="margin: 100px;">No existen datos para los filtros seleccionados.</span>
+    </div>
+  </mat-card>
+</div>

@@ -1,0 +1,35 @@
+<div class="form-wizard" furyPage furyScrollbar fxFlex="grow" fxLayout="column" fxLayoutAlign="start center">
+
+  <div class="card" [ngClass]="{'disabled': filtering}">
+    <mat-vertical-stepper #stepper [linear]="true" class="filter">
+
+      <mat-step [(completed)]="usersCompleted">
+        <ng-template matStepLabel>Seleccione los agentes</ng-template>
+        <agents [(completed)]="usersCompleted" (select)="agentsSelected($event)"> </agents>
+      </mat-step>
+
+      <mat-step [(completed)]="sortCompleted">
+        <ng-template matStepLabel>Ordene los filtros</ng-template>
+        <steps-sorter [(steps)]="steps" [(completed)]="sortCompleted" (sortChange)="sortChange($event)" (stepChange)="stepChange($event)">
+        </steps-sorter>
+      </mat-step>
+
+      <mat-step [(completed)]="s.completed" *ngFor="let s of getSteps(); let i = index">
+        <ng-template matStepLabel style="display: inline-flex">{{s.title}} </ng-template>
+        <div [hidden]="stepper.selectedIndex!=(i+2)">
+          <ndc-dynamic [ndcDynamicComponent]="s.class" [ndcDynamicInputs]="{ 'step': s}" [ndcDynamicOutputs]="outputs"></ndc-dynamic>
+        </div>
+      </mat-step>
+
+      <mat-step [completed]="true">
+        <ng-template matStepLabel>Resultado</ng-template>
+        <steps-summary [stepsSummary]="getStepsSummary()" (confirm)="applyFilters($event)"></steps-summary>
+      </mat-step>
+
+    </mat-vertical-stepper>
+  </div>
+
+  <div *ngIf="filtering" class="overlay"></div>
+  <mat-spinner *ngIf="filtering" class="spinner"></mat-spinner>
+
+</div>

@@ -1,0 +1,46 @@
+<!--
+<div>
+  Estado de los agentes el {{dateReport | date:'dd/MM/yyyy HH:mm'}}Hs
+</div>
+-->
+<mat-card>
+  <mat-card-header>Usuarios en pausa:</mat-card-header>
+  <mat-card-content>
+    <table class="table table-hover table-striped" fxFlex *ngIf="agentsState &&  agentsState.length > 0">
+      <tr>
+        <td>Agente</td>
+        <td>Break</td>
+        <td>Desde</td>
+        <td>Tiempo</td>
+      </tr>
+      <tr *ngFor="let agentState of agentsState">
+        <td *ngIf="users">{{ getUserById(agentState.idUser).firstname }} {{ getUserById(agentState.idUser).lastname }}</td>
+        <td *ngIf="breaksType" >{{ getBreakTypeById(agentState.idTypeBreak).label }}</td>
+        <td>{{agentState.date | date:'dd/MM/yyyy HH:mm'}}Hs</td>   
+        <td>{{timeDiff(agentState.date)}}</td>
+      </tr>
+    </table>
+
+    <div fxLayout="column" style="margin:4px;" *ngIf="agentsState &&  agentsState.length === 0" style="margin-top: 15px;width: 100%; text-align: center;">
+      <span class="mat-display-1" style="margin: 15px;">No hay usuarios en pausa en el sistema.</span>
+    </div>
+
+  </mat-card-content>
+</mat-card>
+<mat-card>
+  <mat-card-header>Usuarios en el sistema:</mat-card-header>
+  <mat-card-content>
+    <table class="table table-hover table-striped" fxFlex>
+      <tr>
+        <td>Agente</td>
+        <td>Desde</td>    
+        <td>Tiempo</td>    
+      </tr>
+      <tr *ngFor="let agentState of usersAuth">
+        <td>{{ getUserById(agentState.userId).firstname }} {{ getUserById(agentState.userId).lastname }}</td>
+        <td>{{agentState.date | date:'dd/MM/yyyy HH:mm'}}Hs</td>
+        <td>{{timeDiff(agentState.date)}}</td>
+      </tr>
+    </table>
+  </mat-card-content>
+</mat-card>

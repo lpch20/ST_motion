@@ -1,0 +1,61 @@
+<fury-scrollbar class="dashboard" furyPage furyPagePadding fxLayout="column">
+    <div furyScrollbar #contentScroll>
+        <div class="content" fxLayout="column" fxLayoutGap="24px">
+
+            <mat-card>
+                <mat-card-title>Avance de llamadas por filtro</mat-card-title>
+
+                <p *ngIf="gsFilters && gsFilters.length ==0">No hay filtros definidos.</p>
+                <div *ngFor="let filterItem of gsFilters; let i = index">
+                    <div style="margin-left: 40px">
+
+                        <div>
+                            <table class="table table-hover table-striped" fxFlex>
+                                <thead>
+                                    <tr>
+                                        <th>Tipo </th>
+                                        <th>Descripción </th>
+                                        <th>Completado (%)
+                                            <div (click)="loadFilterProgress(filterItem)" class="sync">
+                                                <span *ngIf="!filterItem.error">
+                                                    <i class="material-icons"
+                                                        [ngClass]="{ 'image': filterItem.loading }">sync</i>
+                                                </span>
+                                                <span *ngIf="filterItem.error">
+                                                    <i class="material-icons"
+                                                        [ngClass]="{ 'image': filterItem.loading }">sync_problem</i>
+                                                </span>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody *ngIf="filtersLoaded()">
+                                    <tr *ngFor="let item of getOrderedFilters(filterItem.filters)">
+                                        <td> {{ getFriendlyFilterName(item.name) }}</td>
+                                        <td> {{ getFriendlyFilterValues(item.name, item.values)}} </td>
+                                        <td> {{ filterItem.loaded ? (item.percentage | number:'1.0-1') + ' %'  :'-' }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div>
+                            <mat-accordion *ngIf="users">
+                                <mat-expansion-panel expanded="true">
+                                    <mat-expansion-panel-header>
+                                        <mat-panel-title> Agentes </mat-panel-title>
+                                    </mat-expansion-panel-header>
+                                    <div *ngIf="users">
+                                        <div *ngFor="let item of filterItem.userIds"> {{ getAgent(item) }} </div>
+                                    </div>
+                                </mat-expansion-panel>
+                            </mat-accordion>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+            </mat-card>
+
+        </div>
+    </div>
+</fury-scrollbar>

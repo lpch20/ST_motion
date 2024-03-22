@@ -1,0 +1,23 @@
+<div class="toolbar-notifications" fxFlex="grow" fxLayout="row" fxLayoutAlign="start center">
+  <button class="button" type="button" mat-button (click)="toggleDropdown()" [class.open]="isOpen" fxFlex="grow">
+    <mat-icon _ngcontent-c29="" class="mat-icon material-icons" role="img" aria-hidden="true">free_breakfast</mat-icon>
+  </button>
+  <div class="dropdown" [class.open]="isOpen">
+    <mat-card style=" width: 600px; margin :auto;margin-top:15px;">
+      <mat-card-title (click)="toggle()">Pausas</mat-card-title>
+      <mat-card-content *ngIf="showBreakSelector">
+        <mat-list class="list mat-elevation-z1" *ngIf="breakTypes">
+          <mat-list-item *ngFor="let break of breakTypes" style="height:35px;">
+            <label>
+              <span [innerHTML]="break.icon"></span>
+              <input type="radio" name="breakType" [value]="break.id" [(ngModel)]="breakInfo.typeBreak"> {{break.label}}
+            </label>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+      <mat-card-actions fxLayoutAlign="end center">
+        <button mat-raised-button color="primary" (click)="startPause()">Iniciar Pausa</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

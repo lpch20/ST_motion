@@ -1,0 +1,62 @@
+<div class="mat-elevation-z8">
+  <mat-card>
+    <mat-card-content>
+      <mat-form-field *ngIf="_users && supervisorView">
+        <mat-select placeholder="Agente" [(ngModel)]="selectedUserId">
+          <mat-option [value]="u.id" *ngFor="let u of _users">{{u.firstname}} {{u.lastname}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput [matDatepicker]="pikerDateFromSchedule" [(ngModel)]="dateFrom" placeholder="Fecha desde" [formControl]="dateFromCtrl">
+        <mat-datepicker-toggle matSuffix [for]="pikerDateFromSchedule"></mat-datepicker-toggle>
+        <mat-datepicker #pikerDateFromSchedule></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput [matDatepicker]="pikerDateToSchedule" [(ngModel)]="dateTo" placeholder="Fecha hasta" [formControl]="dateToCtrl">
+        <mat-datepicker-toggle matSuffix [for]="pikerDateToSchedule"></mat-datepicker-toggle>
+        <mat-datepicker #pikerDateToSchedule></mat-datepicker>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" (click)="searchSchedule()" *ngIf="dateFromCtrl.status !== 'INVALID' && dateToCtrl.status !== 'INVALID'">Enviar</button>
+      <button mat-raised-button color="primary" *ngIf="dateFromCtrl.status === 'INVALID' || dateToCtrl.status === 'INVALID'" disabled>Enviar</button>
+
+      <mat-table #table [dataSource]="dataSource" matSort class="table table-condensed">
+        <ng-container matColumnDef="date">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Fecha </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{ element.date | date :'dd/MM/yyyy HH:mm'}}Hs </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="user" >
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Agente </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{ getNameByUserId(element.idUser) }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="customer">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Cliente </mat-header-cell>
+          <mat-cell *matCellDef="let element">{{element.lastnamesCustomer}}, {{element.namesCustomer}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="ci">
+            <mat-header-cell *matHeaderCellDef> Cédula </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.ci}} </mat-cell>
+          </ng-container>
+        <ng-container matColumnDef="phoneNumber">
+          <mat-header-cell *matHeaderCellDef> Telefono </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.phoneNumber}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="subject">
+          <mat-header-cell *matHeaderCellDef> Asunto </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.subject}} </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>
+      <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" [showFirstLastButtons]="true">
+      </mat-paginator>
+
+      <div fxLayout="column" style="margin:4px;" *ngIf="schedule &&  schedule.length > 0">
+
+      </div>
+      <div fxLayout="column" style="margin:4px;" *ngIf="schedule &&  schedule.length === 0" style="margin-top: 50px;width: 100%; text-align: center;">
+        <span class="mat-display-1" style="margin: 100px;">No existen datos para las fechas seleccionadas.</span>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

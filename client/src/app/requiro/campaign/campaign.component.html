@@ -1,0 +1,16 @@
+<mat-card>
+  <mat-card-content>
+    <mat-card-title>Campañas</mat-card-title>
+    <table>
+      <tr *ngFor="let c of campaigns">
+        <td>
+          <mat-checkbox [(ngModel)]="c.active"></mat-checkbox>
+        </td>
+        <td>{{c.name}}</td>
+        <td>
+            <button mat-raised-button color="primary" (click)="updateCampaign(c)">Actualizar</button>
+        </td>
+      </tr>
+    </table>
+  </mat-card-content>
+</mat-card>

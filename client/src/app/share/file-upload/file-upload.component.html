@@ -1,0 +1,5 @@
+<input #file type="file" id="file{{index ? '-' + index : ''}}" (change)="onChange($event)" [multiple]="multiple" />
+<label mat-raised-button for="file{{index ? '-' + index : ''}}" class="btn btn-primary" *ngIf="!loadedFile">
+    <i class="fa fa-cloud-upload mr-3"></i>{{label}}
+</label>
+<pre *ngIf="loadedFile"> {{ loadedFile?.name | json }}</pre>

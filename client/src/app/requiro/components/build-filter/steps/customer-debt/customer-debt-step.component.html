@@ -1,0 +1,42 @@
+<form [formGroup]="formGroup">
+  <div class="list-container" fxLayout="column" fxLayoutAlign="center center">
+    <div class="mat-elevation-z4 container">
+      <div class="resultado-filtro filtrables">
+        Clientes filtrables: {{ step.countIn }}
+      </div>
+
+      <div>
+        <label class="label">Monto entre</label>
+        <mat-form-field fxFlex>
+          <input type="number" matInput formControlName="min" (ngModelChange)="valueChange({type: 'min', min:$event})" placeholder="monto mínimo"
+          />
+        </mat-form-field>
+
+        <label  class="label label-y">y</label>
+        <mat-form-field fxFlex>
+          <input type="number" matInput formControlName="max" (ngModelChange)="valueChange({type: 'max', max:$event})" placeholder="monto máximo"
+          />
+        </mat-form-field>
+
+      </div>
+
+      <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="24px">
+        <button mat-raised-button color="primary" (click)="applyFilter()"  [disabled]="!step.completed">Aplicar filtos </button>
+      </div>
+
+      <div class="resultado-filtro">
+        <div> Clientes filtrados {{ step.countFiltered }}</div>
+      </div>
+
+      <div class="resultado-filtro">
+        <div>Restan por filtrar {{ step.countLeftover }}</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="actions" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="8px">
+    <button mat-button type="button" matStepperPrevious color="primary">Anterior</button>
+    <button mat-raised-button matStepperNext color="primary" (click)="applyFilter()" [disabled]="!step.completed">Siguiente </button>
+  </div>
+</form>

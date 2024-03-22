@@ -1,0 +1,1 @@
+* */6 * * * /root/src/requiro_prod/deploy/backup.sh > /root/db-backup/logs/requiro/backup.out 2> /root/db-backup/logs/requiro/backup.err

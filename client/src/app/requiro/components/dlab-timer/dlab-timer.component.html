@@ -1,0 +1,8 @@
+<mat-card *ngIf="running" style="margin-top: 10px!important; width: 600px; margin :auto;">
+  <mat-card-content>    
+      <span fxFlex></span>
+      <span style=" font-size: 20px;" >Llamando en {{time}}s</span>
+      <span fxFlex></span>
+  </mat-card-content>  
+</mat-card>
+<div style="margin: 80px;" *ngIf="!running" ></div>

@@ -1,0 +1,27 @@
+<div furyScrollbar #contentScroll>
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        <span style="font-size: 25px;">Envio de SMS masivos</span>
+      </mat-card-title>
+    </mat-card-header>
+
+
+    <div class="actions" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="8px">
+      <button mat-raised-button color="primary" (click)="downloadCustomers()">Descargar Clientes</button>
+    </div>
+    <!--
+    <div fxLayout="row">
+      <mat-form-field fxFlex>
+        <input matInput placeholder="Numero de celular" [(ngModel)]="celular">
+      </mat-form-field>
+    </div>
+
+    <div class="actions" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="8px">
+      <button mat-raised-button color="primary" (click)="send(celular)">Enviar SMS</button>
+    </div>
+  -->
+
+    <label> {{ result }} </label>
+  </mat-card>
+</div>

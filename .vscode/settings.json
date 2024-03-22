@@ -1,0 +1,23 @@
+{
+  "files.exclude": {
+    // client
+    "client/node_modules": true,
+    // server
+    "server/bd/*.js*": true,
+    "server/src/models/*.js*": true,
+    "server/src/controllers/*.js*": true,
+    "server/src/routes/*.js*": true,
+    "server/src/logic/**/*.js*": true,
+    "server/node_modules": true,
+    "server/src/app.js*": true,
+    // datatypes
+    "datatypes/**/*.js*": true,
+
+    "server/motionLibJS/serverSide/masterClientDBFramework/controllers/*.js*": true
+  },
+  "prettier.tslintIntegration": true,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  }
+}

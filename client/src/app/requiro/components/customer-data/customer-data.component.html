@@ -1,0 +1,100 @@
+<mat-card *ngIf="currentCustomer">
+    <mat-card-title>Datos del cliente</mat-card-title>
+
+    <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="16px">
+        <mat-form-field color="accent" fxFlex.gt-sm>
+            <input matInput placeholder="Nombres:" type="text" [(ngModel)]="currentCustomer.names" disabled>
+        </mat-form-field>
+        <mat-form-field color="accent" fxFlex.gt-sm>
+            <input matInput placeholder="Apellidos:" type="text" [(ngModel)]="currentCustomer.lastnames" disabled>
+        </mat-form-field>
+        <mat-form-field color="accent" fxFlex.gt-sm>
+            <input matInput placeholder="Edad:" type="text" [(ngModel)]="currentCustomer.age" disabled>
+        </mat-form-field>
+    </div>
+
+    <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="16px">
+        <mat-form-field fxFlex>
+            <input matInput placeholder="Departamento" [matAutocomplete]="autoCompleteDepartaments"
+                [(ngModel)]="departmentSelected" [formControl]="stateCtrl" (ngModelChange)="departamentChanged()">
+            <mat-autocomplete #autoCompleteDepartaments="matAutocomplete" [displayWith]="displayName">
+                <mat-option *ngFor="let state of filteredStates | async" [value]="state">
+                    <span>{{ state.name }}</span>
+                </mat-option>
+            </mat-autocomplete>
+            <button *ngIf="stateCtrl.value" type="button" mat-icon-button (click)="stateCtrl.reset()" matSuffix>
+                <mat-icon>close</mat-icon>
+            </button>
+        </mat-form-field>
+        <mat-form-field fxFlex>
+            <input matInput placeholder="Localidad" [matAutocomplete]="autoCompleteCities" [(ngModel)]="citySelected"
+                [formControl]="cityCtrl">
+            <mat-autocomplete #autoCompleteCities="matAutocomplete" [displayWith]="displayName">
+                <mat-option *ngFor="let city of filteredCities | async" [value]="city">
+                    <span>{{ city.name }}</span>
+                </mat-option>
+            </mat-autocomplete>
+            <button *ngIf="cityCtrl.value" type="button" mat-icon-button (click)="cityCtrl.reset()" matSuffix>
+                <mat-icon>close</mat-icon>
+            </button>
+        </mat-form-field>
+        <mat-form-field color="warn" fxFlex.gt-sm>
+            <input matInput placeholder="Dirección:" type="text" [(ngModel)]="currentCustomer.address">
+        </mat-form-field>
+    </div>
+    <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="16px">
+        <mat-form-field color="primary" fxFlex.gt-sm>
+            <input matInput placeholder="CI:" type="text" [(ngModel)]="currentCustomer.ci" disabled>
+        </mat-form-field>
+        <mat-form-field color="accent" fxFlex.gt-sm>
+            <input matInput placeholder="E-Mail" type="text" [(ngModel)]="currentCustomer.email">
+        </mat-form-field>
+        <mat-form-field fxFlex>
+            <input matInput placeholder="Profesión" [matAutocomplete]="autoCompleteCareer" [(ngModel)]="careerSelected"
+                [formControl]="careerCtrl">
+            <mat-autocomplete #autoCompleteCareer="matAutocomplete" [displayWith]="displayName">
+                <mat-option *ngFor="let career of filteredCareers | async" [value]="career">
+                    <span>{{ career.name }}</span>
+                </mat-option>
+            </mat-autocomplete>
+            <button *ngIf="careerCtrl.value" type="button" mat-icon-button (click)="careerCtrl.reset()" matSuffix>
+                <mat-icon>close</mat-icon>
+            </button>
+        </mat-form-field>
+    </div>
+    <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="16px">
+        <div class="col-2">
+            <b>Teléfonos</b>
+            <button mat-mini-fab color="accent" (click)=newPhone()>
+                <i class="material-icons" style="font-size:13px"> add </i>
+            </button>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap;">
+            <div style="flex: 1 0 33%;" class="col"
+                *ngFor="let tel of currentCustomer.phones; let i = index; trackBy:trackByFn">
+                <div style="white-space: nowrap;">
+                    <input type="text" [(ngModel)]="currentCustomer.phones[i]" style="width: 90px;" />
+                    <button (click)="callNumber(tel,i)" style="color: #ffffff;background-color: #434A5f;">
+                        <i class="material-icons" style="font-size:13px">phone</i>
+                    </button>
+                    <button (click)="currentCustomer.changePositionPhone(tel,i-1,i)"
+                        style="color: #ffffff;background-color: #434A5f;" *ngIf="i > 0">
+                        <i class="material-icons" style="font-size:13px"> arrow_upward </i>
+                    </button>
+                    <button (click)="currentCustomer.changePositionPhone(tel,i+1,i)"
+                        style="color: #ffffff;background-color: #434A5f;" *ngIf="i + 1 < currentCustomer.phones.length">
+                        <i class="material-icons" style="font-size:13px"> arrow_downward </i>
+                    </button>
+                    <button (click)="removeTel(tel)" style="color: #ffffff;background-color: #FF0000;">
+                        <i class="material-icons" style="font-size:13px">delete</i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="actions" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="8px">
+        <button mat-raised-button color="primary" (click)="saveCustomerData()">Guardar</button>
+    </div>
+</mat-card>

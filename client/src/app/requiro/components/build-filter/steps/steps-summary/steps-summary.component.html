@@ -1,0 +1,12 @@
+<div furyAspectRatio="1:1.3" furyAspectRatio.sm="1:1" fxFlex="grow">
+
+  <fury-advanced-pie-chart-widget *ngIf="completed()"
+                                  [data]="getChartData() | async"
+                                  [options]="advancedPieChartOptions">
+  </fury-advanced-pie-chart-widget>
+
+  <div>
+    <input type="checkbox"  [(ngModel)]="reiniciar">Reiniciar llamadas
+  </div>
+  <button mat-raised-button color="primary" (click)="applyFilters()">Aplicar filtros</button>
+</div>

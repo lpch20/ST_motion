@@ -1,0 +1,49 @@
+<mat-form-field *ngIf="_users && supervisorView">
+  <mat-select placeholder="Agente" [(ngModel)]="selectedUserId">
+    <mat-option [value]="u.id" *ngFor="let u of _users">{{u.firstname}} {{u.lastname}}</mat-option>
+  </mat-select>
+</mat-form-field>
+<mat-form-field>
+  <input matInput [matDatepicker]="pikerDateFrom" [(ngModel)]="dateFrom" placeholder="Desde" [formControl]="dateFromCtrl">
+  <mat-datepicker-toggle matSuffix [for]="pikerDateFrom"></mat-datepicker-toggle>
+  <mat-datepicker #pikerDateFrom></mat-datepicker>
+</mat-form-field>
+<mat-form-field>
+  <input matInput [matDatepicker]="pikerDateTo" [(ngModel)]="dateTo" placeholder="Hasta" [formControl]="dateToCtrl">
+  <mat-datepicker-toggle matSuffix [for]="pikerDateTo"></mat-datepicker-toggle>
+  <mat-datepicker #pikerDateTo></mat-datepicker>
+</mat-form-field>
+
+<button mat-raised-button color="primary" (click)="loadData()" *ngIf="dateFromCtrl.status !== 'INVALID' && dateToCtrl.status !== 'INVALID'">Enviar</button>
+
+<div [hidden]="timeWorked && timeWorked.length === 0">
+  <mat-table #table [dataSource]="dataSource" matSort class="table table-condensed">
+    <ng-container matColumnDef="userId">
+      <mat-header-cell *matHeaderCellDef> Agente </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{ getUser(element.userId) }} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="breakTime">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Tiempo en pausa </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{ formatDuration(element.breakTime) }} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="loginTime">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Tiempo en el sistema </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{ formatDuration(element.loginTime) }} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="totalWorkTime">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Tiempo total trabajado </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{ formatDuration(element.totalWorkTime) }} </mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+
+  <div [hidden]="!supervisorView">
+    <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" [showFirstLastButtons]="true">
+    </mat-paginator>
+  </div>
+</div>
+
+<div *ngIf="timeWorked &&  timeWorked.length === 0" style="margin-top: 50px;width: 100%; text-align: center;">
+  <span class="mat-display-1" style="margin: 100px;">No existen datos para las fechas seleccionadas.</span>
+</div>

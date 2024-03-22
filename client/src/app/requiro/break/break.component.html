@@ -1,0 +1,7 @@
+
+<break-call (messageEvent)="breakEnd($event)" [breakRunning]="breakRunning" 
+            [breakType]="breakType" [timeBreak]="initialTimeBreak"></break-call>
+
+<div *ngIf="error" style="margin: auto;width: 350px;padding: 30px;color: #ff0000; font-weight: bold;font-size: 25px;">
+    {{this.errorMessage}}
+</div>

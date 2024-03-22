@@ -1,0 +1,43 @@
+<div class="toolbar-notifications" (furyClickOutside)="onClickOutside()" fxFlex="grow" fxLayout="row" fxLayoutAlign="start center">
+  <button class="button" type="button" mat-button (click)="toggleDropdown()" [class.open]="isOpen" fxFlex="grow">
+    <!--<mat-icon class="icon">notifications_active</mat-icon>-->
+    <mat-icon _ngcontent-c29="" class="mat-icon material-icons" role="img" aria-hidden="true">timer</mat-icon>
+  </button>
+  <div class="dropdown" [class.open]="isOpen">
+    <fury-card>
+      <fury-card-header class="header">
+        <fury-card-header-title>
+          Agendar llamada
+        </fury-card-header-title>
+      </fury-card-header>
+      <fury-card-content class="card-content">
+        <fury-scrollbar class="content">
+          <div fxLayout="column" style="margin:4px;">
+            <div fxLayout.gt-sm="row" fxLayoutGap.gt-sm="16px">
+              <mat-form-field fxFlex>
+                <input matInput placeholder="Asunto" type="text">
+              </mat-form-field>
+            </div>
+            <div fxLayout.gt-sm="row" fxLayoutGap.gt-sm="16px">
+              <mat-form-field fxFlex>
+                <input matInput placeholder="Teléfono" type="text" disabled value="099123456">
+              </mat-form-field>
+            </div>
+            <div fxLayout.gt-sm="row" fxLayoutGap.gt-sm="16px">
+              <mat-form-field>
+                <input matInput [matDatepicker]="picker" placeholder="Fecha de promesa de pago">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div class="actions" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="8px">
+              <button mat-raised-button color="primary">Agendar
+              </button>
+            </div>
+          </div>
+        </fury-scrollbar>
+      </fury-card-content>
+
+    </fury-card>
+  </div>
+</div>

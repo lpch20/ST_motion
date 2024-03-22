@@ -1,0 +1,17 @@
+<div class="toolbar" fxLayout="row" fxLayoutAlign="space-between">
+  <div fxLayout="row" fxLayoutAlign="start center">
+    <fury-toolbar-sidenav-mobile-toggle></fury-toolbar-sidenav-mobile-toggle>
+
+    <a [routerLink]="['/']" style="margin-left: 24px;color: steelblue; text-decoration: none;font-weight: bold; margin-bottom: -5px;"
+      fxHide.gt-md fxHide.xs>REQUIRO</a>
+
+  </div>
+  <div fxLayout="row">    
+    <fury-toolbar-fullscreen-toggle class="button"></fury-toolbar-fullscreen-toggle>
+    <search-customer class="button" *ngIf="isHome"></search-customer>    
+    <schedule class="button" *ngIf="isHome" ></schedule>
+    <break-selector class="button"></break-selector>
+    <user-button class="button"></user-button>
+    <quick-panel-toggle class="button" [quickpanel]="quickpanel" *ngIf="isHome"></quick-panel-toggle>  
+  </div>
+</div> 

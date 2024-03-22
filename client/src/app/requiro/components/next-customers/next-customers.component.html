@@ -1,0 +1,10 @@
+<mat-card>
+  <mat-card-title (click)="toggle()">Próximos clientes</mat-card-title>
+  <div *ngIf="showData">
+    <mat-list class="list mat-elevation-z1">
+      <mat-list-item *ngFor="let c of nextCustomers">
+        <h3 matLine >{{c.names}} {{c.lastnames}}</h3>
+      </mat-list-item>
+    </mat-list>
+  </div>
+</mat-card>

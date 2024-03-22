@@ -1,0 +1,124 @@
+<div class="login" fxLayout="row" fxLayoutAlign="center center">
+    <div class="session-card">
+        <div class="header" fxLayout="column" fxLayoutAlign="center center">
+            <img src="assets/img/stmotion.png">
+        </div>
+        <div class="content" fxLayout="column" fxLayoutGap="24px">
+            <div fxFlex="grow" fxLayout="column" fxLayoutGap="8px">
+                <mat-form-field fxFlex="grow">
+                    <mat-placeholder>Usuario</mat-placeholder>
+                    <input matInput [(ngModel)]="username" [formControl]="userCtrl" >
+                </mat-form-field>
+                <mat-form-field fxFlex="grow">
+                    <mat-placeholder>Password</mat-placeholder>
+                    <input matInput [(ngModel)]="password" [type]="inputType" [formControl]="passCtrl">
+                    <button *ngIf="!visible" type="button" mat-icon-button matSuffix (click)="show()">
+                        <mat-icon>visibility</mat-icon>
+                    </button>
+                    <button *ngIf="visible" type="button" mat-icon-button matSuffix (click)="hide()">
+                        <mat-icon>visibility_off</mat-icon>
+                    </button>
+                </mat-form-field>
+                <mat-form-field fxFlex="grow">
+                    <mat-placeholder>Agente</mat-placeholder>
+                    <input matInput [(ngModel)]="agent" type="text" required>
+                </mat-form-field>
+                <span *ngIf="newPassword">
+                    Un administrador solicito que ingresara una nueva contraseña
+                </span>
+                <mat-form-field fxFlex="grow" *ngIf="newPassword">
+                    <mat-placeholder>Nuevo Password</mat-placeholder>
+                    <input matInput [(ngModel)]="newPass" [type]="inputType" [formControl] = "newPassCtrl">
+                    <button *ngIf="!visible" type="button" mat-icon-button matSuffix (click)="show()">
+                        <mat-icon>visibility</mat-icon>
+                    </button>
+                    <button *ngIf="visible" type="button" mat-icon-button matSuffix (click)="hide()">
+                        <mat-icon>visibility_off</mat-icon>
+                    </button>
+                </mat-form-field>
+                <mat-form-field fxFlex="grow" *ngIf="newPassword">
+                    <mat-placeholder>Repetir Nuevo Password</mat-placeholder>
+                    <input matInput [(ngModel)]="newPass2" [type]="inputType" [formControl] = "newPass2Ctrl">
+                    <button *ngIf="!visible" type="button" mat-icon-button matSuffix (click)="show()">
+                        <mat-icon>visibility</mat-icon>
+                    </button>
+                    <button *ngIf="visible" type="button" mat-icon-button matSuffix (click)="hide()">
+                        <mat-icon>visibility_off</mat-icon>
+                    </button>
+                </mat-form-field>
+            </div>
+
+            <button type="button" color="primary" [disabled]="userCtrl.status === 'INVALID' || passCtrl.status === 'INVALID'"
+                mat-raised-button *ngIf="!newPassword" (click)="login()">
+                Iniciar sesión
+            </button>
+            <button type="button" color="primary" 
+            [disabled]="userCtrl.status === 'INVALID' || passCtrl.status === 'INVALID' || newPassCtrl.status === 'INVALID' || newPass2Ctrl.status === 'INVALID'"
+                mat-raised-button *ngIf="newPassword" (click)="changePasswordAndLogin()">
+                Iniciar sesión / Cambiar contraseña
+            </button>
+        </div>
+    </div>
+</div>
+
+<!--
+<div class="login" fxLayout="row" fxLayoutAlign="center center">
+    <div class="session-card">
+        <div class="header" fxLayout="column" fxLayoutAlign="center center">
+            <img src="assets/img/stmotion.png">
+        </div>
+        <div class="content" fxLayout="column" fxLayoutGap="24px" [formGroup]="form">
+            <div fxFlex="grow" fxLayout="column" fxLayoutGap="8px">
+                <mat-form-field fxFlex="grow">
+                    <mat-placeholder>Usuario</mat-placeholder>
+                    <input matInput [(ngModel)]="username" required formControlName="email" (ngModelChange)="onUserNameChanged($event)">
+                </mat-form-field>
+                <mat-form-field fxFlex="grow">
+                    <mat-placeholder>Password</mat-placeholder>
+                    <input matInput [(ngModel)]="password" [type]="inputType" formControlName="password">
+                    <button *ngIf="!visible" type="button" mat-icon-button matSuffix (click)="show()">
+                        <mat-icon>visibility</mat-icon>
+                    </button>
+                    <button *ngIf="visible" type="button" mat-icon-button matSuffix (click)="hide()">
+                        <mat-icon>visibility_off</mat-icon>
+                    </button>
+                </mat-form-field>
+                <mat-form-field fxFlex="grow" *ngIf="isAgent">
+                    <mat-placeholder>Agente</mat-placeholder>
+                    <input matInput [(ngModel)]="agent" type="number" required formControlName="agent">
+                </mat-form-field>
+                <span *ngIf="newPassword">
+                    Un administrador solicito que ingresara una nueva contraseña
+                </span>
+                <mat-form-field fxFlex="grow" *ngIf="newPassword">
+                    <mat-placeholder>Nuevo Password</mat-placeholder>
+                    <input matInput [(ngModel)]="newPass" [type]="inputType">
+                    <button *ngIf="!visible" type="button" mat-icon-button matSuffix (click)="show()">
+                        <mat-icon>visibility</mat-icon>
+                    </button>
+                    <button *ngIf="visible" type="button" mat-icon-button matSuffix (click)="hide()">
+                        <mat-icon>visibility_off</mat-icon>
+                    </button>
+                </mat-form-field>
+                <mat-form-field fxFlex="grow" *ngIf="newPassword">
+                    <mat-placeholder>Repetir Nuevo Password</mat-placeholder>
+                    <input matInput [(ngModel)]="newPass2" [type]="inputType">
+                    <button *ngIf="!visible" type="button" mat-icon-button matSuffix (click)="show()">
+                        <mat-icon>visibility</mat-icon>
+                    </button>
+                    <button *ngIf="visible" type="button" mat-icon-button matSuffix (click)="hide()">
+                        <mat-icon>visibility_off</mat-icon>
+                    </button>
+                </mat-form-field>
+            </div>
+
+            <button type="button" color="primary" mat-raised-button *ngIf="!newPassword" [disabled]="form.invalid" (click)="login()">
+                Iniciar sesión
+            </button>
+            <button type="button" color="primary" mat-raised-button *ngIf="newPassword" [disabled]="form.invalid" (click)="changePasswordAndLogin()">
+                Iniciar sesión / Cambiar contraseña
+            </button>
+        </div>
+    </div>
+</div>
+-->

@@ -1,0 +1,80 @@
+<!--
+<user-create-update [usersRols]="rols"></user-create-update>
+-->
+
+<fury-scrollbar class="overflow-container">
+  <mat-card>
+    <mat-card-title>Usuarios</mat-card-title>
+    <div class="actions" fxLayoutAlign="end center">
+      <button class="create" type="button" mat-mini-fab color="primary" (click)="createCustomer()">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Usuario</th>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>Extensión</th>
+          <th>Rol</th>
+          <th>Intentos fallidos</th>
+          <th>Teléfono</th>
+          <th>Activo</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tr *ngFor="let u of users">
+        <td>
+          {{u.user_name}}
+        </td>
+        <td>
+          {{u.firstname}}
+        </td>
+        <td>
+          {{u.lastname}}
+        </td>
+        <td>
+          {{u.ext}}
+        </td>
+        <td>
+          <span *ngIf="rols.get(u.rol_id)">{{rols.get(u.rol_id).name}}</span>
+        </td>
+        <td>
+          {{u.numberOfAttempts}}
+        </td>
+        <td>
+          <i class="material-icons" *ngIf="!u.withoutPhone" (click)="toggleWithoutPhone(u.id_user_master,true)"
+            style="color: #43aa34">check_circle</i>
+          <i class="material-icons" *ngIf="u.withoutPhone" (click)="toggleWithoutPhone(u.id_user_master,true)"
+            style="color: #aa0000">remove_circle</i>
+        </td>
+        <td>
+          <i class="material-icons" *ngIf="u.active" style="color: #43aa34">check_circle</i>
+          <i class="material-icons" *ngIf="!u.active" style="color: #aa0000">remove_circle</i>
+        </td>
+        <td>
+          <button type="button" mat-icon-button [matMenuTriggerFor]="actionsMenu" (click)="$event.stopPropagation()">
+            <mat-icon>more_horiz</mat-icon>
+          </button>
+
+          <mat-menu #actionsMenu="matMenu" yPosition="below" xPosition="before">
+            <button (click)="updateUser(u.id_user_master)" mat-menu-item>
+              <span>Editar</span>
+            </button>
+            <button *ngIf="u.active" (click)="deleteUser(u.id_user_master)" mat-menu-item>
+              <span>Desactivar</span>
+            </button>
+            <button *ngIf="!u.active" (click)="activeUser(u.id_user_master)" mat-menu-item>
+              <span>Activar</span>
+            </button>
+            <button (click)="cleanNumberOfAttempts(u.id_user_master)" mat-menu-item>
+              <span>Limpiar reintentos</span>
+            </button>
+          </mat-menu>
+        </td>
+      </tr>
+    </table>
+  </mat-card>
+</fury-scrollbar>

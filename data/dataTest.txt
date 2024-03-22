@@ -1,0 +1,5 @@
+atrnumced,atrnombre,atrapelli,atrdeutot,atrlocali,atrazo,atrnac,atrnumtel,atrnumcel,atrnumcel1,atrteltra,atrtelbau
+"92371522","Juan","Apellido Cambiado",'3591.73','Las piedras',50,10-10-1980,"099123412","22222222",,
+"92371522","Juan2","Apellido Cambiado",'3591.73','Las piedras',10,08-10-1995,"099123412","22222223",,
+"92371522","Juan3","Apellido Cambiado",'3591.73','Las piedras',70,08-07-1995,"0991232412","22222224",,
+"22230528","Juan4","Apellido Cambiado4",'3591.73','Las piedras',70,08-07-1995,"0991232412","22222224",,

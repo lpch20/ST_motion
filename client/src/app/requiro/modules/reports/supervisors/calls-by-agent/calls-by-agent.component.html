@@ -1,0 +1,57 @@
+<mat-form-field *ngIf="campaigns">
+  <mat-select placeholder="Campaña" [(ngModel)]="selectedCampaignId" (change)="eventCampaignChange()">
+    <mat-option [value]="c.id" *ngFor="let c of campaigns">{{c.name}}</mat-option>
+  </mat-select>
+</mat-form-field>
+
+<mat-form-field *ngIf="_users">
+  <mat-select placeholder="Agente" [(ngModel)]="selectedUserId" (change)="eventChange()">
+    <mat-option [value]="u.id" *ngFor="let u of _users">{{u.firstname}} {{u.lastname}}</mat-option>
+  </mat-select>
+</mat-form-field>
+
+<mat-form-field>
+  <input matInput [matDatepicker]="pikerDateFrom" [(ngModel)]="dateFrom" placeholder="Fecha desde">
+  <mat-datepicker-toggle matSuffix [for]="pikerDateFrom"></mat-datepicker-toggle>
+  <mat-datepicker #pikerDateFrom></mat-datepicker>
+</mat-form-field>
+
+<mat-form-field>
+  <input matInput [matDatepicker]="pikerDateTo" [(ngModel)]="dateTo" placeholder="Fecha hasta">
+  <mat-datepicker-toggle matSuffix [for]="pikerDateTo"></mat-datepicker-toggle>
+  <mat-datepicker #pikerDateTo></mat-datepicker>
+</mat-form-field>
+<button mat-raised-button color="primary" (click)="searchEvents()">Filtrar</button>
+
+<!-- (matSortChange)="sortData($event)" -->
+<div [hidden]="userCalls && userCalls.length === 0">
+  <mat-table #table [dataSource]="dataSource" matSort >
+    <ng-container matColumnDef="idUser">
+      <mat-header-cell *matHeaderCellDef> Agente </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{ getUser(element.idUser) }} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="countByCustomer">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Unicas por CI </mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.countByCustomer }}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="count">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Totales </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{ element.count }} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="percentageTotal">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> % Unicas </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{ element.percentageTotal | number:'1.0-1' }} </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+
+  <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" [showFirstLastButtons]="true">
+  </mat-paginator>
+
+</div>
+
+<div *ngIf="userCalls &&  userCalls.length === 0" style="margin-top: 50px;width: 100%; text-align: center;">
+  <span class="mat-display-1" style="margin: 100px;">No existen datos para las fechas seleccionadas.</span>
+</div>

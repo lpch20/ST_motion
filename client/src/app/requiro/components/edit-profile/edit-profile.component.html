@@ -1,0 +1,88 @@
+<div class="form-wizard" furyPage furyScrollbar style="margin-top:30px;"
+      fxFlex="grow" fxLayout="column" fxLayoutAlign="start center">
+
+  <mat-card style="min-width: 650px;">
+    <mat-card-header>
+      <mat-card-title>
+        <span style="font-size: 25px;">Perfil del usuario</span>
+      </mat-card-title>
+    </mat-card-header>
+
+    <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="16px">
+      <div fxFlex="50%">
+
+        <div fxLayout="row">
+          <span style="font-size: 22px;">Foto de usuario</span>
+        </div>
+
+        <div>
+          <img style="width: 200px" *ngIf="currentUser && currentUser.image_name" src="/images/{{currentUser.image_name}}" />
+          <mat-icon style="font-size: 130px; color: gray;" *ngIf="!currentUser || !currentUser.image_name" class="icon">account_circle</mat-icon>
+
+          <input style="display: none" type="file" (change)="onFileChanged($event)" #fileInput/>
+        </div>
+
+        <div fxLayout="row">
+          <button type="button" color="primary" [disabled]="sendingImage" mat-raised-button (click)="fileInput.click()">Cambiar imagen</button>
+        </div>
+        <div fxLayout="row">
+          {{res}}
+        </div>
+
+      </div>
+
+      <div fxFlex="50%">
+
+        <div fxLayout="row">
+          <span style="font-size: 22px;">Cambiar contraseña</span>
+        </div>
+
+        <div fxLayout="row">
+          <mat-form-field fxFlex="grow">
+            <mat-placeholder>Password</mat-placeholder>
+            <input matInput [(ngModel)]="password" [type]="inputType" [formControl]="passCtrl">
+            <button *ngIf="!visible" type="button" mat-icon-button matSuffix (click)="show()">
+              <mat-icon>visibility</mat-icon>
+            </button>
+            <button *ngIf="visible" type="button" mat-icon-button matSuffix (click)="hide()">
+              <mat-icon>visibility_off</mat-icon>
+            </button>
+          </mat-form-field>
+        </div>
+
+        <div fxLayout="row">
+          <mat-form-field fxFlex="grow">
+            <mat-placeholder>Nuevo Password</mat-placeholder>
+            <input matInput [(ngModel)]="newPass" [type]="inputType" [formControl]="newPassCtrl">
+            <button *ngIf="!visible" type="button" mat-icon-button matSuffix (click)="show()">
+              <mat-icon>visibility</mat-icon>
+            </button>
+            <button *ngIf="visible" type="button" mat-icon-button matSuffix (click)="hide()">
+              <mat-icon>visibility_off</mat-icon>
+            </button>
+          </mat-form-field>
+        </div>
+
+        <div fxLayout="row">
+          <mat-form-field fxFlex="grow">
+            <mat-placeholder>Repetir Nuevo Password</mat-placeholder>
+            <input matInput [(ngModel)]="newPass2" [type]="inputType" [formControl]="newPass2Ctrl">
+            <button *ngIf="!visible" type="button" mat-icon-button matSuffix (click)="show()">
+              <mat-icon>visibility</mat-icon>
+            </button>
+            <button *ngIf="visible" type="button" mat-icon-button matSuffix (click)="hide()">
+              <mat-icon>visibility_off</mat-icon>
+            </button>
+          </mat-form-field>
+        </div>
+
+        <div fxLayout="row">
+          <button type="button" color="primary" mat-raised-button (click)="changePasswordAndLogin()">
+            Cambiar contraseña
+          </button>
+        </div>
+      </div>
+      <!-- </div>-->
+    </div>
+  </mat-card>
+</div>

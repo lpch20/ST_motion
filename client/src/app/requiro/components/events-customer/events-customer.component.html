@@ -1,0 +1,36 @@
+<mat-card>
+  <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="16px">
+    <mat-radio-group [(ngModel)]="eventTypeSelected">
+      
+        <mat-radio-button class="radio" [value]="0" (change)="changeEventType(0)" style="margin-left:10px;">
+          Todos
+        </mat-radio-button>
+        <mat-radio-button class="radio" *ngFor="let e of eventTypes" [value]="e.id" (change)="changeEventType(e.id)">
+          <button mat-icon-button matTooltip="{{e.name}}">
+            <span [innerHTML]="e.icon" style="margin-right: 35px;" ></span>
+          </button>
+        </mat-radio-button>
+      
+    </mat-radio-group>
+  </div>
+  <table class="table">
+    <tr>
+      <th></th>
+      <th>Fecha:</th>
+      <th>Teléfono</th>
+      <th>Agente:</th>
+      <th>Nota:</th>
+    </tr>
+    <tr *ngFor="let e of customerEvents">
+      <td>
+        <span [innerHTML]="getEventTypeIcon(e.eventType)"></span>
+      </td>
+      <td>{{e.date | date :'dd/MM/yyyy hh:mm'}}Hs</td>
+      <td>{{e.phone}}</td>
+      <td>
+        <span *ngIf="users.get(e.idUser)"> {{users.get(e.idUser).firstname}} {{users.get(e.idUser).lastname}}</span>
+      </td>
+      <td>{{e.message}}</td>
+    </tr>
+  </table>
+</mat-card>

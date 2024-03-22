@@ -1,0 +1,60 @@
+<mat-card style=" width: 600px; margin :auto;">
+  <!--
+  <mat-card-header *ngIf="!_showDetail">
+    <span fxFlex></span>
+    <!--<span>Llamando en {{time}}s</span> -->
+<!--    
+  </mat-card-header>
+-->
+  <mat-card-content>
+    <div style="font-size: 50px;text-align: center" *ngIf="customer && !_showDetail">
+      <span *ngIf="campaigns && getCampaignById(customer.idCampaign)">{{ getCampaignById(customer.idCampaign).name }}</span>
+      <table style="font-size: 30px;margin: auto;">
+        <tr>
+          <td>
+            <i class="material-icons">person</i>
+          </td>
+          <td>{{customer.names}} {{customer.lastnames}}</td>
+        </tr>
+        <tr *ngIf="customer.phones[indexPhone]">
+          <td>
+            <i class="material-icons orange600">phone</i>
+          </td>          
+          <td>
+            <input type="text" [(ngModel)]="customer.phones[indexPhone]" disabled />
+          </td>
+        </tr>
+      </table>
+    </div>
+    <!--
+  </mat-card-content>
+  <mat-card-actions>
+  -->
+    <div fxLayout="row">
+      <span fxFlex></span>
+      <button mat-button (click)="call()">
+        <i class="material-icons">call</i>
+        <span>Llamar</span>
+      </button>
+    
+      <button mat-button (click)="toogle()" *ngIf="timerActive">
+        <mat-icon _ngcontent-c29="" class="mat-icon material-icons" role="img" aria-hidden="true" *ngIf="playerStatus">stop</mat-icon>
+        <span *ngIf="playerStatus">Pausar Player</span>
+        <mat-icon _ngcontent-c29="" class="mat-icon material-icons" role="img" aria-hidden="true" *ngIf="!playerStatus">play_arrow</mat-icon>
+        <span *ngIf="!playerStatus">Iniciar Player</span>
+      </button>
+    
+      <!--<call-player class="botton"></call-player>-->
+      <button mat-button (click)="nextCustomer()">
+        <i class="material-icons">skip_next</i>
+        <span>Próximo</span>
+      </button>
+
+      <button mat-button (click)="showDetail()">
+        <i class="material-icons">contacts</i>
+        <span>Detalles</span>
+      </button>
+      <span fxFlex></span>
+    </div>
+  </mat-card-content>
+</mat-card>

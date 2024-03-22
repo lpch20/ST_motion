@@ -1,0 +1,31 @@
+<mat-card *ngIf="error" style="margin: 150px;background-color: #E72512;color: white;">
+    <mat-card-title>Error</mat-card-title>
+    <mat-card-content>
+        {{messageError}}
+    </mat-card-content>
+</mat-card>
+
+<dlab-timer [time]="timerTime" [player]="player" (timer)=timerFinished($event) *ngIf="timerActive && currentCustomer && !ready && !error"></dlab-timer>
+
+<div *ngIf="!timerActive" style="margin: 15px;"></div>
+<customer-player [customer]="currentCustomer" [index-current-phone]="indexCurrentPhone" [timerActive]="timerActive" [playerStatus]="player" (detailEvent)="showDetail($event)" (callPhone)="initCall($event)" *ngIf="currentCustomer && !ready && !error"></customer-player>
+
+<fury-scrollbar class="dashboard" furyPage furyPagePadding fxLayout="column" *ngIf="(ready  && !error) || _showDetails">
+    <div furyScrollbar #contentScroll [ngClass]="{'customerDetail': !ready}">
+        <div class="content" fxLayout="column" fxLayoutGap="24px">
+            <!--<div *ngIf="ready  && !error && currentCustomer"> -->
+            <div *ngIf="currentCustomer">
+                <event-customer [customer-id]="currentCustomer.id" [idsPayment]="idsPayment" [timerActive]="timerActive" [index-current-phone]="indexCurrentPhone"></event-customer>
+            </div>
+            <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="16px">
+                <div [fxFlex]="customers&&customers.length>1&&isMoraTardia()?'75%':'100%'">
+                    <customer-data [currentCustomer]="currentCustomer" (changeIndexPhone)="changeCurrentIndexPhone($event)"></customer-data>
+                    <debt-data [customer-id]="currentCustomer.id" [debts]="debts"></debt-data>
+                </div>
+                <div fxFlex *ngIf="customers&&customers.length>1&&isMoraTardia()">
+                    <next-customers [customers]="customers"></next-customers>
+                </div>
+            </div>
+        </div>
+    </div>
+</fury-scrollbar>

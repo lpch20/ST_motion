@@ -1,0 +1,108 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var appFactory = require('../src/app');
+var debug = require('debug')('test2:server');
+
+var https = require('https');
+var fs = require('fs');
+
+/** read cert */
+// var privateKey = fs.readFileSync('/root/https/stmotion/stmotion.io.key').toString(),
+//     certificate = fs.readFileSync('/root/https/stmotion/9c7dfaa786e607ed.crt').toString(),
+//     cert_g = fs.readFileSync('/root/https/stmotion/gd_bundle-g2-g1_1.crt').toString(),
+//     cert_g1 = fs.readFileSync('/root/https/stmotion/gd_bundle-g2-g1_2.crt').toString(),
+//     cert_g2 = fs.readFileSync('/root/https/stmotion/gd_bundle-g2-g1_3.crt').toString();
+
+var privateKey = fs.readFileSync('/root/https/stmotion/stmotion.io.key').toString(),
+    certificate = fs.readFileSync('/root/https/stmotion/1186ba582e157d46.crt').toString(),
+    cert_g = fs.readFileSync('/root/https/stmotion/gd_bundle-g2-g1_1.crt').toString(),
+    cert_g1 = fs.readFileSync('/root/https/stmotion/gd_bundle-g2-g1_2.crt').toString(),
+    cert_g2 = fs.readFileSync('/root/https/stmotion/gd_bundle-g2-g1_3.crt').toString();
+
+
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+var port = normalizePort(process.env.PORT || '443');
+var app = new appFactory.App(port);
+
+
+/**
+ * Create HTTP server.
+ */
+// secure impl
+var options = { key: privateKey, cert: certificate, ca: [cert_g, cert_g1, cert_g2] };
+var server = https.createServer(options, app.init());
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+server.listen(port, '179.27.98.14');
+server.on('error', onError);
+server.on('listening', onListening);
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+    var port = parseInt(val, 10);
+
+    if (isNaN(port)) {
+        // named pipe
+        return val;
+    }
+
+    if (port >= 0) {
+        // port number
+        return port;
+    }
+
+    return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+    if (error.syscall !== 'listen') {
+        throw error;
+    }
+
+    var bind = typeof port === 'string'
+        ? 'Pipe ' + port
+        : 'Port ' + port;
+
+    // handle specific listen errors with friendly messages
+    switch (error.code) {
+        case 'EACCES':
+            console.error(bind + ' requires elevated privileges');
+            process.exit(1);
+            break;
+        case 'EADDRINUSE':
+            console.error(bind + ' is already in use');
+            process.exit(1);
+            break;
+        default:
+            throw error;
+    }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+    var addr = server.address();
+    var bind = typeof addr === 'string'
+        ? 'pipe ' + addr
+        : 'port ' + addr.port;
+    debug('Listening on ' + bind);
+}

@@ -1,0 +1,69 @@
+<mat-card>
+  <mat-card-content>
+    <!-- <button mat-raised-button color="primary" (click)="importData()">Importar datos</button>
+    <button mat-raised-button color="primary" (click)="importAllData()">Importar todos los datos</button>
+    <button mat-raised-button color="primary" (click)="importDebt()">Importar datos deuda</button>
+    <button mat-raised-button color="primary" (click)="importCampaigns()">Importar campañas</button>
+    <button mat-raised-button color="primary" (click)="importDates()">Importar fechas</button>
+    -->
+    <button mat-raised-button color="primary" (click)="deleteOldCustomerCampaigns()">Limpiar campañas</button>
+
+    <button mat-raised-button color="primary" (click)="lastEventForAll()">Reporte ultimos eventos</button>
+
+
+
+    <div style="margin: 30px;">
+      <file-upload (onFileLoaded)="fileCampaignChangeLoaded($event)" class="buttonImport"
+        (onErrors)="showErrors($event)" label="Cargar datos" [allowed-extensions]="allowedExtensions"></file-upload>
+    </div>
+
+
+    <mat-card>
+      <mat-card-header>
+        Modificar masivamente campañas de clientes
+      </mat-card-header>
+      <mat-card-content class="bodyMassive">
+        <span class="expectedFormat">Formato esperado: ci , idCampaign</span>
+
+        <button mat-raised-button color="primary" (click)="changeCampaign()">Modificar campañas</button>
+      </mat-card-content>
+    </mat-card>
+
+
+    <mat-card>
+      <mat-card-header>
+        Modificar masivamente los clientes de colas
+      </mat-card-header>
+      <mat-card-content class="bodyMassive">
+        <span class="expectedFormat">Formato esperado: ci , idCola</span>
+        <!-- <file-upload (onFileLoaded)="fileQueueChangeLoaded($event)" class="buttonImport" (onErrors)="showErrors($event)"
+          label="Cambio de cola masiva" [allowed-extensions]="allowedExtensions">
+        </file-upload> -->
+
+        <button mat-raised-button color="primary" (click)="changeQueue()">Modificar datos</button>
+      </mat-card-content>
+    </mat-card>
+
+
+
+    <mat-card>
+      <mat-card-header>
+        Modificar masivamente campañas y colas
+      </mat-card-header>
+      <mat-card-content class="bodyMassive">
+        <span class="expectedFormat">Formato esperado: ci , idCola, idCampaign</span>
+
+        <!-- <file-upload (onFileLoaded)="fileCampaignQueueChangeLoaded($event)" class="buttonImport"
+          (onErrors)="showErrors($event)" label="Cargar datos" [allowed-extensions]="allowedExtensions"></file-upload> -->
+
+        <button mat-raised-button color="primary" (click)="changeCampaignQueue()">Modificar datos</button>
+      </mat-card-content>
+    </mat-card>
+  </mat-card-content>
+</mat-card>
+<mat-card>
+  <mat-card-content>
+    <label style="color:green">{{result}}</label>
+    <label style="color:red">{{error}}</label>
+  </mat-card-content>
+</mat-card>

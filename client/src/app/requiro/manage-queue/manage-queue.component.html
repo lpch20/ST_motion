@@ -1,0 +1,86 @@
+<table>
+  <tr>
+    <td>
+      <mat-card>
+        <mat-card-content>
+          <mat-card-title>Pasar usuario a cola</mat-card-title>
+
+          <mat-form-field>
+            <mat-select placeholder="Usuario:" matInput [(ngModel)]="userForSetQueue">
+              <mat-option *ngFor="let u of users" [value]="u.id">{{u.firstname}} {{u.lastname}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field *ngIf="queues">
+            <mat-select placeholder="Cola:" matInput [(ngModel)]="queueForSetUser" [formControl]="queueCtrl">
+              <mat-option *ngFor="let q of queues" [value]="q.id">{{q.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <button (click)="assignUserToQueue()">Asignar</button>
+
+        </mat-card-content>
+      </mat-card>
+    </td>
+    <td>
+      <mat-card>
+        <mat-card-content>
+          <mat-card-title>Pasar campaña a Cola</mat-card-title>
+          <mat-form-field>
+            <mat-select placeholder="Campaña:" matInput [(ngModel)]="campaignForSetCustomerCampaign">
+              <mat-option *ngFor="let c of campaigns" [value]="c.id">{{c.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field *ngIf="queues">
+            <mat-select placeholder="Cola:" matInput [(ngModel)]="queueForSetCustomerCampaign">
+              <mat-option *ngFor="let q of queues" [value]="q.id">{{q.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button (click)="assignCampaignToQueue()">Asignar</button>
+        </mat-card-content>
+      </mat-card>
+    </td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td>
+      <mat-card>
+        <mat-card-content>
+          <mat-card-title>Usuarios en Cola</mat-card-title>
+
+          <mat-form-field>
+            <mat-select placeholder="Cola:" matInput [(ngModel)]="queueForUsers">
+              <mat-option *ngFor="let q of queues" [value]="q.id">{{q.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button (click)="getUsers()">Consultar</button>
+          <table>
+            <tr *ngFor="let u of usersInQueue">
+              <td>{{u.firstname}} {{u.lastname}}</td>
+            </tr>
+          </table>
+        </mat-card-content>
+      </mat-card>
+    </td>
+    <td>
+      <mat-card>
+        <mat-card-content>
+          <mat-card-title>Campañas en Cola</mat-card-title>
+          <mat-form-field>
+            <mat-select placeholder="Cola:" matInput [(ngModel)]="queueForCampaigns">
+              <mat-option *ngFor="let q of queues" [value]="q.id">{{q.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button (click)="getCampaigns()">Consultar</button>
+          <table>
+            <tr *ngFor="let u of campaignsInQueue">
+              <td>{{u.name}}</td>
+            </tr>
+          </table>
+        </mat-card-content>
+      </mat-card>
+    </td>
+  </tr>
+</table>

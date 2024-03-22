@@ -1,0 +1,36 @@
+<fury-scrollbar class="overflow-container">
+  <mat-card>
+    <mat-tab-group>
+      <mat-tab label="Eventos del cliente">
+        <customer-event-report [supervisorView]="supervisorView"></customer-event-report>
+      </mat-tab>
+      <mat-tab label="Llamadas agendadas">
+        <scheduled-calls-report [supervisorView]="supervisorView"></scheduled-calls-report>
+      </mat-tab>
+      <mat-tab label="Pausas">
+        <breaks-report [supervisorView]="supervisorView"></breaks-report>
+      </mat-tab>
+      <mat-tab label="Inicio/Fin de sesión">
+        <mat-card>
+          <mat-card-content>
+            <sessions-report [supervisorView]="supervisorView"></sessions-report>
+          </mat-card-content>
+        </mat-card>
+      </mat-tab>
+      <mat-tab label="Tiempo en el sistema">
+        <mat-card>
+          <mat-card-content>
+            <time-worked-report [supervisorView]="supervisorView"></time-worked-report>
+          </mat-card-content>
+        </mat-card>
+      </mat-tab>
+      <mat-tab label="Reporte de llamadas">
+        <mat-card>
+          <mat-card-content>
+            <calls-by-agent></calls-by-agent>
+          </mat-card-content>
+        </mat-card>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card>
+</fury-scrollbar>

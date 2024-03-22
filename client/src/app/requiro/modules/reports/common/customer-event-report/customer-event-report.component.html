@@ -1,0 +1,112 @@
+<mat-card>
+    <mat-card-content>
+        <mat-form-field *ngIf="_users && supervisorView">
+            <mat-select placeholder="Usuario" [(ngModel)]="selectedUserId">
+                <mat-option [value]="u.id" *ngFor="let u of _users">{{u.firstname}} {{u.lastname}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+            <input matInput [matDatepicker]="pikerDateFromEvents" [(ngModel)]="dateFrom" placeholder="Fecha desde"
+                [formControl]="dateFromCtrl">
+            <mat-datepicker-toggle matSuffix [for]="pikerDateFromEvents"></mat-datepicker-toggle>
+            <mat-datepicker #pikerDateFromEvents></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput [matDatepicker]="pikerDateToEvents" [(ngModel)]="dateTo" placeholder="Fecha hasta"
+                [formControl]="dateToCtrl">
+            <mat-datepicker-toggle matSuffix [for]="pikerDateToEvents"></mat-datepicker-toggle>
+            <mat-datepicker #pikerDateToEvents></mat-datepicker>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" (click)="searchEvents()"
+            *ngIf="dateFromCtrl.status !== 'INVALID' && dateToCtrl.status !== 'INVALID'">Enviar</button>
+        <button mat-raised-button color="primary"
+            *ngIf="dateFromCtrl.status === 'INVALID' || dateToCtrl.status === 'INVALID'" disabled>Enviar</button>
+
+        <button mat-raised-button (click)="exportCSV()" [disabled]="!eventsCustomers||eventsCustomers.length==0">
+            Exportar a CSV
+            <i class="material-icons">
+                trending_up
+            </i>
+        </button>
+
+        <mat-spinner *ngIf="loadingEvents"></mat-spinner>
+        <div [hidden]="loadingEvents">
+            <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="16px">
+                <mat-radio-group [(ngModel)]="eventTypeSelected">
+                    <mat-radio-button class="radio" [value]="0" (change)="changeEventType(0)">
+                        Todos
+                    </mat-radio-button>
+                    <mat-radio-button class="radio" *ngFor="let e of eventTypes" [value]="e.id"
+                        (change)="changeEventType(e.id)">
+                        <button mat-icon-button matTooltip="{{e.name}}">
+                            <span [innerHTML]="e.icon"></span>
+                        </button>
+                    </mat-radio-button>
+                </mat-radio-group>
+            </div>
+            <mat-table #table [dataSource]="dataSource" matSort>
+                <ng-container matColumnDef="date">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Fecha </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{ element.date | date :'dd/MM/yyyy HH:mm'}}Hs </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="user">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Agente </mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{ getNameByUserId(element.idUser) }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="eventType">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="60px"> Tipo evento </mat-header-cell>
+                    <mat-cell *matCellDef="let element" fxFlex="60px">
+                        <span [innerHTML]="getEventTypeIcon(element.eventType)"
+                            [matTooltip]="getEventTypeLabel(element.eventType)"></span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ci">
+                    <mat-header-cell *matHeaderCellDef> CI </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.ci}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="phone">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Telefono </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.phone}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="customer">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Cliente </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.names}} {{element.lastnames}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="departament">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Departamento</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{getDepartmentById(element.idDepartment)?getDepartmentById(element.idDepartment).name:''}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="city">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Ciudad</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{getCityById(element.idCity)?getCityById(element.idCity).name:''}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="campaign">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Campaña</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{ getCampaignByCustomerId(element.idCustomer) }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="address">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Dirección</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.address}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="message">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Mensaje </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.message}} </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+            <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" [showFirstLastButtons]="true">
+            </mat-paginator>
+        </div>
+        <div fxLayout="column" style="margin:4px;" *ngIf="eventsCustomers &&  eventsCustomers.length === 0"
+            style="margin-top: 50px;width: 100%; text-align: center;">
+            <span class="mat-display-1" style="margin: 100px;">No existen datos para los filtros seleccionados.</span>
+        </div>
+    </mat-card-content>
+</mat-card>

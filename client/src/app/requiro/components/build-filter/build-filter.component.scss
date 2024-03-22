@@ -1,0 +1,19 @@
+mat-vertical-stepper.filter {
+    min-width: 740px;
+}
+
+.disabled {
+    opacity: 0.2;
+}
+
+.spinner{
+    position: absolute;
+    top: 25%
+}
+
+.overlay{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top:0px;
+}

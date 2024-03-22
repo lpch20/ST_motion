@@ -1,0 +1,65 @@
+<div fxLayout="row" style="margin:4px;">
+  <mat-form-field fxFlex>
+    <input matInput placeholder="Cola Origen" [matAutocomplete]="queueFromChange" [(ngModel)]="queueSelectedFromChange" [formControl]="queueFromChangeCtrl">
+    <mat-autocomplete #queueFromChange="matAutocomplete">
+      <mat-option *ngFor="let state of filtredQueueFromChange | async" [value]="state.name">
+        <span>{{ state.name }}</span>
+      </mat-option>
+    </mat-autocomplete>
+    <button *ngIf="queueFromChangeCtrl.value" type="button" mat-icon-button (click)="queueFromChangeCtrl.reset()" matSuffix>
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+  <mat-form-field fxFlex>
+    <mat-select placeholder="Campaña" fxFlex [(ngModel)]="campaignSelected">
+      <mat-option>Todas las campañas</mat-option>
+      <mat-option [value]="c" *ngFor="let c of campaigns;let i = index;trackBy:trackByFn">{{c.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field fxFlex>
+    <input matInput placeholder="CI" [(ngModel)]="ciSelected">
+  </mat-form-field>
+  <button mat-raised-button color="primary" (click)="getCustomersByQueue()" *ngIf="queueFromChangeCtrl.status !== 'INVALID'">Buscar</button>
+  <button mat-raised-button color="primary" *ngIf="queueFromChangeCtrl.status === 'INVALID'" disabled>Buscar</button>
+</div>
+
+<div [hidden]="loadingEvents">
+  <mat-table [dataSource]="dataSourceQueue">
+    <ng-container matColumnDef="assign">
+      <mat-header-cell *matHeaderCellDef></mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <mat-checkbox [(ngModel)]="element.assigned"></mat-checkbox>
+      </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="ci">
+      <mat-header-cell *matHeaderCellDef> Cédula </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.ci}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="names">
+      <mat-header-cell *matHeaderCellDef> Cliente </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.names}} {{element.lastnames}} </mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+  <mat-paginator #paginatorQueueCustomers [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" [showFirstLastButtons]="true">
+  </mat-paginator>
+</div>
+<div fxLayout="row" style="margin:4px;">
+  <mat-form-field fxFlex>
+    <input matInput placeholder="Cola Destino" [matAutocomplete]="queueToChange" [(ngModel)]="queueSelectedToChange" [formControl]="queueToChangeCtrl">
+    <mat-autocomplete #queueToChange="matAutocomplete">
+      <mat-option *ngFor="let state of filtredQueueToChange | async" [value]="state.name">
+        <span>{{ state.name }}</span>
+      </mat-option>
+    </mat-autocomplete>
+    <button *ngIf="queueToChangeCtrl.value" type="button" mat-icon-button (click)="queueToChangeCtrl.reset()" matSuffix>
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+</div>
+<div class="actions" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="8px">
+  <button mat-raised-button color="primary" (click)="saveChangeCustomerQueue()" *ngIf="queueFromChangeCtrl.status !== 'INVALID' && queueToChangeCtrl.status !== 'INVALID'">Guardar</button>
+  <button mat-raised-button color="primary" *ngIf="queueFromChangeCtrl.status === 'INVALID' || queueToChangeCtrl.status === 'INVALID'"
+    disabled>Guardar</button>
+</div>

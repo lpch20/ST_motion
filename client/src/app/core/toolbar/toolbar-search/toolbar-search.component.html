@@ -1,0 +1,14 @@
+<div fxLayout="row" fxLayoutAlign="center stretch" fxFlex="grow">  
+  <mat-form-field >
+    <input #input matInput placeholder="{{textPaceHolder}}" [(ngModel)]="name">
+  </mat-form-field>
+  <mat-form-field >
+    <input #input matInput placeholder="CI" [(ngModel)]="ci">
+  </mat-form-field>
+  <mat-form-field >
+    <input #input matInput placeholder="Telefono" [(ngModel)]="phone">
+  </mat-form-field>
+  <button class="search-button" mat-button (click)="find()" fxFlex="grow">
+    <mat-icon>search</mat-icon>
+  </button>
+</div>

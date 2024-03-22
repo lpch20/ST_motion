@@ -1,0 +1,120 @@
+<mat-card>
+    <mat-tab-group *ngIf="debts">
+        <mat-tab label="Datos de la deuda ({{debt.idPay }} {{debt.portfolio}}) " *ngFor="let debt of debts">
+            <table class="table" *ngIf="showData && debt">
+                <tr>
+                    <td>
+                        <b>Tarjeta:</b> {{debt.haveCreditCard ? "Si" : "No"}}
+                    </td>
+                    <td>
+                        <b>U$S Orden:</b> {{debt.amountOrderDollar}}
+                    </td>
+                    <td>
+                        <b>U$S Tarjeta:</b> {{debt.amountCreditCardDollar}}
+                    </td>
+                    <td>
+                        <b>Atr T:</b> {{debt.delayCreditCard}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>Orden:</b> {{debt.havePurchaseOrder ? "Si" : "No"}}
+                    </td>
+                    <td>
+                        <b>$ Orden:</b> {{debt.amountOrderPesos}}
+                    </td>
+                    <td>
+                        <b>$ Tarjeta:</b> {{debt.amountCreditCardPesos}}
+                    </td>
+                    <td>
+                        <b>Atr O:</b> {{debt.delayOrder}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>Amnistia:</b>
+                    </td>
+                    <td>
+                        <b>$ Amnistia:</b> {{debt.amountAmnestyPesos}}
+                    </td>
+                    <td>
+                        <b>Atr Amn:</b> {{debt.delayAmnesty}}
+                    </td>
+                    <!-- PARCHE CREDITOS DIRECTOS-->
+                    <td style="color: red;">
+                        <span
+                            *ngIf="(debt.delayCreditCard > 1080 || debt.delayOrder > 1080) && debt.minimumToCharge > 5">
+                            <b>Mínimo a cobrar:</b> {{debt.minimumToCharge * 1.15 | number: '1.0-2'}}
+                        </span>
+                        <span *ngIf="debt.delayCreditCard < 1080 && debt.delayOrder < 1080">
+                            <b>Mínimo a cobrar:</b> {{debt.minimumToCharge}}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>Mínimo a cobrar:</b> {{debt.minimumToCharge}}
+                    </td>
+                    <td>
+                        <b>Máximo a cobrar:</b> {{debt.maxToCharge}}
+                    </td>
+                    <td>
+                        <b>Cantidad total de cuotas de
+                            <br />amnistía atrasada:</b> {{debt.totalFeesDelayAmnesty}}
+                    </td>
+                    <td>
+                        <b>Cantidad total de cuotas de
+                            <br />amnistía no pagas:</b> {{debt.totalFeesAmnesty}}
+                    </td>
+                </tr>
+            </table>
+        </mat-tab>
+
+        <mat-tab label="Pagos" *ngIf="payments && payments.length > 0">
+            <table class="table">
+                <tr>
+                    <td>Fecha de firma</td>
+                    <td>Fecha de pago</td>
+                    <td>Cuotas totales</td>
+                    <td>Cuotas actual</td>
+                    <td>Monto</td>
+                    <td>Vencimiento</td>
+                </tr>
+                <tr *ngFor="let p of payments">
+                    <td>{{p.signatureDate | date :'dd/MM/yyyy'}}</td>
+                    <td>{{p.paymentDate | date :'dd/MM/yyyy'}}</td>
+                    <td>{{p.amountOfFees}}</td>
+                    <td>{{p.currentFee}}</td>
+                    <td>{{p.amount}}</td>
+                    <td>{{p.expirationDate | date :'dd/MM/yyyy'}}</td>
+                </tr>
+            </table>
+        </mat-tab>
+        <mat-tab label="Convenios" *ngIf="agreements && agreements.length > 0">
+            <table class="table">
+                <tr>
+                    <td>Primera cuota impaga</td>
+                    <td>Vencimiento última cuota</td>
+                    <td>Cantidad de cuotas impagas</td>
+                    <td>Suma de la deuda</td>
+                    <td>Cuota</td>
+                    <td>Firmado</td>
+                    <td>Cuotas totales</td>
+                    <td>Importe firmado</td>
+                    <td>Última cuota paga</td>
+                </tr>
+                <tr *ngFor="let p of agreements">
+                    <td>{{p.firstFeeUnpaid | date :'dd/MM/yyyy' }}</td>
+                    <td>{{p.lastFeeUnpaid | date :'dd/MM/yyyy' }} </td>
+                    <td>{{p.amountOfFeesUnpaid}}</td>
+                    <td>{{p.amountOfDebt}}</td>
+                    <td>{{p.currentFee}}</td>
+                    <td>{{p.dateSigned | date :'dd/MM/yyyy' }}</td>
+                    <td>{{p.amountOfFees}}</td>
+                    <td>{{p.amountSigned}}</td>
+                    <td>{{p.lastFeePaid}}</td>
+                </tr>
+            </table>
+        </mat-tab>
+    </mat-tab-group>
+</mat-card>

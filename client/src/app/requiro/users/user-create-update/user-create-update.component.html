@@ -1,0 +1,71 @@
+<h2 mat-dialog-title>Usuarios</h2>
+<form [formGroup]="userFormGroup" (ngSubmit)="save()" *ngIf="user">
+  <mat-dialog-content>
+    <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="24px">
+      <mat-form-field fxFlex>
+        <input type="text" matInput placeholder="Usuario" formControlName="username" [(ngModel)]="user.user_name"
+          required>
+      </mat-form-field>
+      <mat-form-field fxFlex>
+        <input type="text" matInput placeholder="Nombre" formControlName="name" [(ngModel)]="user.firstname" required>
+      </mat-form-field>
+      <mat-form-field fxFlex>
+        <input type="text" matInput placeholder="Apellido" formControlName="lastname" [(ngModel)]="user.lastname"
+          required>
+      </mat-form-field>
+    </div>
+    <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="24px">
+      <mat-form-field fxFlex>
+        <input type="text" matInput placeholder="Extensión" formControlName="ext" [(ngModel)]="user.ext" required>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-select placeholder="Rol" *ngIf="data.usersRols" formControlName="rols" [(ngModel)]="user.rol_id" required>
+          <mat-option [value]="r.id" *ngFor="let r of data.usersRols">{{r.name}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="24px">
+
+      <div *ngIf="isUpdateMode()" fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="24px">
+        <mat-radio-group formControlName="active" [(ngModel)]="user.active">
+          <mat-radio-button class="radio" [value]="0">Inactivo</mat-radio-button>
+          <mat-radio-button class="radio" [value]="1">Activo</mat-radio-button>
+        </mat-radio-group>
+      </div>
+      <div fxFlex></div>
+
+      <div *ngIf="isUpdateMode()" fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="24px">
+        <mat-radio-group formControlName="withoutPhone" [(ngModel)]="user.withoutPhone">
+          <mat-radio-button class="radio" [value]="0">Con teléfono</mat-radio-button>
+          <mat-radio-button class="radio" [value]="1">Sin teléfono</mat-radio-button>
+        </mat-radio-group>
+      </div>
+    </div>
+
+
+    <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="24px">
+      <!--<mat-form-field fxFlex *ngIf="isCreateMode()">-->
+      <mat-form-field fxFlex>
+        <input type="password" matInput placeholder="Contraseña" [(ngModel)]="user.password" formControlName="psw">
+      </mat-form-field>
+      <!--<mat-form-field fxFlex *ngIf="isCreateMode()">-->
+      <mat-form-field fxFlex>
+        <input type="password" matInput placeholder="Repita contraseña">
+      </mat-form-field>
+      <mat-form-field fxFlex>
+        <input type="text" matInput [(ngModel)]="pswGenereated" [ngModelOptions]="{standalone: true}" disabled
+          placeholder="Contraseña">
+      </mat-form-field>
+      <div fxFlex>
+        <a (click)="generatePSW()" mat-raised-button color="primary" style="margin: 10px;">Generar
+          <i class='material-icons'>vpn_key</i>
+        </a>
+      </div>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center">
+    <button *ngIf="isCreateMode()" mat-raised-button color="primary" [disabled]="!userFormGroup.valid">Guardar</button>
+    <button *ngIf="isUpdateMode()" mat-raised-button color="primary"
+      [disabled]="!userFormGroup.valid">Actualizar</button>
+  </mat-dialog-actions>
+</form>

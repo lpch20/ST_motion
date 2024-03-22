@@ -1,0 +1,52 @@
+<mat-card>
+
+  <mat-form-field *ngIf="_users">
+    <mat-select placeholder="Usuario" [(ngModel)]="selectedUserId">
+      <mat-option [value]="u.id" *ngFor="let u of _users">{{u.firstname}} {{u.lastname}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput [matDatepicker]="pikerDateFromEvents" [(ngModel)]="dateFrom" placeholder="Fecha desde" [formControl]="dateFromCtrl">
+    <mat-datepicker-toggle matSuffix [for]="pikerDateFromEvents"></mat-datepicker-toggle>
+    <mat-datepicker #pikerDateFromEvents></mat-datepicker>
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput [matDatepicker]="pikerDateToEvents" [(ngModel)]="dateTo" placeholder="Fecha hasta" [formControl]="dateToCtrl">
+    <mat-datepicker-toggle matSuffix [for]="pikerDateToEvents"></mat-datepicker-toggle>
+    <mat-datepicker #pikerDateToEvents></mat-datepicker>
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" (click)="searchEvents()" *ngIf="dateFromCtrl.status !== 'INVALID' && dateToCtrl.status !== 'INVALID'">Enviar</button>
+  <button mat-raised-button color="primary" *ngIf="dateFromCtrl.status === 'INVALID' || dateToCtrl.status === 'INVALID'" disabled>Enviar</button>
+  <div>
+    <table class="table table-hover table-striped" fxFlex>
+      <thead>
+        <tr>
+          <th>Resultado </th>
+          <th>Cantidad </th>
+          <th> (%)
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let e of eventsCustomers">
+          <td *ngIf="eventTypes">
+            {{ eventTypeById(e.eventType).name}}
+          </td>
+          <td>{{e.occurrences}}</td>
+          <td *ngIf="e.occurrences > 0">
+            {{ ((e.occurrences / cantEvents) * 100).toFixed(1) }}
+          </td>
+          <td *ngIf="e.occurrences == 0"> 0 </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!--
+      <div furyAspectRatio="1:1.3" furyAspectRatio.sm="1:1" fxFlex="grow">
+        <fury-donut-chart-widget furyAspectRatioContent [data]="top5CategoriesData$ | async"
+            [options]="top5CategoriesOptions"></fury-donut-chart-widget>
+      </div>
+    -->
+</mat-card>

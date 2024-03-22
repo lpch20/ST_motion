@@ -1,0 +1,22 @@
+<div class="quickpanel" fxFlex>
+  <fury-scrollbar class="overflow-container">
+    <div class="text-padding">
+      <p class="h1">
+        Llamadas agendadas
+      </p>
+    </div>
+    <mat-divider></mat-divider>
+    <mat-nav-list *ngIf="schedule && schedule.length > 0">
+      <a href="javascript:" mat-list-item *ngFor="let s of schedule" (click)="customerDatail(s.idCustomer)">
+        <mat-checkbox [(ngModel)]="s.active" (change)="toogleResolved($event,s.id)" ></mat-checkbox>
+        <h4 matLine>{{s.namesCustomer}} {{s.lastnamesCustomer}}</h4>
+        <p matLine>{{s.date | date :'dd/MM/yyyy HH:mm'}}Hs</p>
+        <p matLine>{{s.subject}}</p>
+        <p matLine>{{s.phoneNumber}}</p>
+      </a>
+    </mat-nav-list>    
+    <div *ngIf="schedule && schedule.length === 0" style="margin: 30px;margin-top:100px;font-size: 30px;text-align: center;">
+      No hay ninguna llamada agendada para el día de hoy
+    </div>
+  </fury-scrollbar>
+</div>

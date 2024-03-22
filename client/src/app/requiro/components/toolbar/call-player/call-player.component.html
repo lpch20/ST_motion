@@ -1,0 +1,8 @@
+<div class="toolbar-notifications" fxFlex="grow" fxLayout="row" fxLayoutAlign="start center">
+  <button class="button" type="button" mat-button  fxFlex="grow" (click)="toogle()">
+    <mat-icon _ngcontent-c29="" class="mat-icon material-icons" role="img" aria-hidden="true" *ngIf="playerStatus">stop</mat-icon>   
+    <span *ngIf="playerStatus" >Pausar</span> 
+    <mat-icon _ngcontent-c29="" class="mat-icon material-icons" role="img" aria-hidden="true" *ngIf="!playerStatus">play_arrow</mat-icon>
+    <span *ngIf="!playerStatus">Iniciar</span>
+  </button>
+</div>

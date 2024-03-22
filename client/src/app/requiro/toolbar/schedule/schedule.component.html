@@ -1,0 +1,58 @@
+<div class="toolbar-notifications" (furyClickOutside)="onClickOutside()" fxFlex="grow" fxLayout="row" fxLayoutAlign="start center">
+  <button class="button" type="button" mat-button (click)="toggleDropdown()" [class.open]="isOpen" fxFlex="grow">
+    <mat-icon _ngcontent-c29="" class="mat-icon material-icons" role="img" aria-hidden="true">timer</mat-icon>
+  </button>
+  <div class="dropdown" [class.open]="isOpen">
+    <fury-card>
+      <fury-card-header class="header">
+        <fury-card-header-title>
+          Agendar llamada
+        </fury-card-header-title>
+      </fury-card-header>
+      <fury-card-content class="card-content">
+        <fury-scrollbar class="content">
+          <div fxLayout="column" style="margin:4px;">
+            <div fxLayout.gt-sm="row" fxLayoutGap.gt-sm="16px" *ngIf="customer">
+              <mat-form-field fxFlex>
+                <input matInput placeholder="Cliente" type="text" disabled value="{{customer.names}} {{customer.lastnames}}">
+              </mat-form-field>
+            </div>
+            <div fxLayout.gt-sm="row" fxLayoutGap.gt-sm="16px">
+              <mat-form-field fxFlex>
+                <input matInput placeholder="Asunto" type="text" [(ngModel)]="currentSchedule.subject" [formControl]="subjectCtrl">
+              </mat-form-field>
+            </div>
+
+            <div fxLayout.gt-sm="row" fxLayoutGap.gt-sm="16px" *ngIf="customer">
+              <mat-form-field fxFlex>
+                <mat-select placeholder="Teléfono" fxFlex [(ngModel)]="currentSchedule.phoneNumber" [formControl]="phoneCtrl">
+                  <mat-option [value]="phone" *ngFor="let phone of customer.phones;let i = index; trackBy:trackByFn">{{phone}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div fxLayout.gt-sm="row" fxLayoutGap.gt-sm="16px">
+              <mat-form-field>
+                <input matInput [matDatepicker]="picker" placeholder="Fecha" [formControl]="dateCtrl" [(ngModel)]="currentSchedule.date">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+              <mat-form-field style="width: 60px">
+                <input type="number" matInput placeholder="Hora" type="text" [(ngModel)]="scheduleTime.hour" [formControl]="hourCtrl">
+              </mat-form-field>
+              <span class="hourSeparator">:</span>
+              <mat-form-field style="width: 60px">
+                <input type="number" matInput placeholder="Minuto" type="text" [(ngModel)]="scheduleTime.minute" [formControl]="minuteCtrl">
+              </mat-form-field>
+            </div>
+            <div class="actions" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="8px">
+              <button mat-raised-button color="primary" (click)="saveSchedule()" *ngIf="subjectCtrl.status !== 'INVALID' && phoneCtrl.status !== 'INVALID' && 
+                        dateCtrl.status !== 'INVALID' && hourCtrl.status !== 'INVALID' && minuteCtrl.status !== 'INVALID' ">Agendar</button>
+              <button mat-raised-button color="primary" disabled *ngIf="subjectCtrl.status === 'INVALID' || phoneCtrl.status === 'INVALID' || 
+                        dateCtrl.status === 'INVALID' || hourCtrl.status === 'INVALID' || minuteCtrl.status === 'INVALID'">Agendar</button>
+            </div>
+          </div>
+        </fury-scrollbar>
+      </fury-card-content>
+    </fury-card>
+  </div>
+</div>

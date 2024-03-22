@@ -1,0 +1,134 @@
+<mat-card *ngIf="currentCustomer">
+    <mat-card-header *ngIf="currentCustomer">
+        <i class="material-icons">phone</i>
+        <input *ngIf="currentCustomer.phones && currentCustomer.phones.length > 0" style="font-size: 25px;width: 150px;" type="text" disabled [(ngModel)]="currentCustomer.phones[indexPhone]">
+        <span fxFlex></span>
+        <span class="{{eventAnnotationClass}}" style="font-weight: bold;text-align: center;font-size: 30px;" *ngIf="progressiveTimer > 0 && timerActive">
+      <i class="material-icons">
+        access_time
+      </i>
+      Tiempo transcurrido: {{progressiveTimer}}s
+      <i class="material-icons">
+        timelapse
+      </i>
+      Tiempo restante {{totalTime}}s
+    </span>
+    </mat-card-header>
+    <div *ngIf="currentCustomer">
+        <div style="margin: 10px;">
+            <div class="container">
+                <div fxLayout.gt-sm="row" fxLayoutGap.gt-sm="16px">
+                    <mat-form-field *ngIf="currentCustomer && eventTypes">
+                        <mat-select placeholder="Campaña" *ngIf="eventTypes" [(ngModel)]="currentCustomer.idCampaign" (change)="eventChange()">
+                            <mat-option [value]="c.id" *ngFor="let c of champaign">{{c.name}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field *ngIf="eventTypes">
+                        <mat-select placeholder="Resultado" [(ngModel)]="resultInteraction" [formControl]="resultCtrl" (ngModelChange)="changeEventType()">
+                            <mat-option *ngFor="let e of eventTypes" [value]="e.id">{{e.name}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field *ngIf="actions">
+                        <mat-select placeholder="Acción" [(ngModel)]="actionInteraction" [formControl]="actionCtrl">
+                            <mat-option *ngFor="let a of actions" [value]="a.id">{{a.name}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field *ngIf="idsPayment && idsPayment.length > 0">
+                        <mat-select placeholder="Id de pago" [(ngModel)]="idPayment">
+                            <mat-option *ngFor="let id of idsPayment" [value]="id">{{id}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field *ngIf="currentCustomer.idCampaign === 3">
+                        <input matInput [matDatepicker]="picker" readonly placeholder="Fecha de promesa de pago" [(ngModel)]="newEngagement.paymentPromiseDate">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                    <mat-form-field *ngIf="currentCustomer.idCampaign === 3">
+                        <mat-select placeholder="Cantidad de cuotas:" [(ngModel)]="newEngagement.numberOfFees">
+                            <mat-option *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36]" [value]="i">{{i}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field *ngIf="currentCustomer.idCampaign === 3">
+                        <input matInput placeholder="Importe de la cuota" type="number" [(ngModel)]="newEngagement.amountFees">
+                    </mat-form-field>
+                </div>
+                <div *ngIf="currentCustomer.idCampaign === 3">
+                    <div fxLayout.gt-sm="row" fxLayoutGap.gt-sm="16px">
+                        <mat-form-field fxFlex>
+                            <input matInput placeholder="Deuda acordada" type="number" [(ngModel)]="newEngagement.agreedDebt">
+                        </mat-form-field>
+                        <mat-form-field fxFlex>
+                            <input matInput placeholder="Entrega inicial:" type="number" [(ngModel)]="newEngagement.initialDelivery">
+                        </mat-form-field>
+                        <mat-form-field fxFlex>
+                            <mat-select placeholder="Sucursal" [(ngModel)]="newEngagement.idBranchOffice" (ngModelChange)="eventChange()">
+                                <mat-option *ngFor="let b of branchOffices" [value]="b.id">{{b.name}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div *ngIf="currentCustomer &&  currentCustomer.idCampaign === 3">
+                    <mat-form-field>
+                        <input matInput [matDatepicker]="picker2" readonly placeholder="Llamar de nuevo" [(ngModel)]="newEngagement.callAgain">
+                        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                        <mat-datepicker #picker2></mat-datepicker>
+                    </mat-form-field>
+                    <div class="form-group col-2">
+                        <div class="form-group">
+                            <div class="input-group">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div fxLayout="row" *ngIf="showMessage()">
+                    <mat-form-field fxFlex>
+                        <textarea matInput placeholder="Comentario:" flex [formControl]="messageCtrl" [(ngModel)]="newMessage"></textarea>
+                    </mat-form-field>
+                </div>
+                <div class="actions" fxLayout="row" fxLayoutGap="8px">
+                    <button mat-raised-button (click)="toogleHistory()" [color]="engagementColor" *ngIf="historyEngagament && currentCustomer && currentCustomer.idCampaign === 3">
+            <i class="material-icons">history</i> Compromisos
+          </button>
+                    <button mat-raised-button [color]="eventsColor" (click)="toogleEventsHistory()">
+            <i class="material-icons">speaker_notes</i> Eventos
+          </button>
+                    <span fxFlex></span>
+                    <button mat-raised-button color="primary" (click)="saveAnnotation()">Enviar</button>
+                    <!--
+          <button mat-raised-button color="primary" (click)="saveAnnotation()" *ngIf="checkValidForm()">Enviar</button>          
+          <button mat-raised-button color="primary"  *ngIf="!checkValidForm()" disabled>Enviar</button>
+        -->
+                </div>
+                <div *ngIf="showEngagamentHistory">
+                    <table class="table table-hover table-striped" fxFlex *ngIf="customerEngagamentes && customerEngagamentes.length > 0">
+                        <tr>
+                            <td>Fecha de promesa de pago</td>
+                            <td>Cantidad de cuotas</td>
+                            <td>Importe de la cuota</td>
+                            <td>Deuda acordada</td>
+                            <td>Entrega inicial:</td>
+                            <td>Sucursal</td>
+                            <td>Llamar de nuevo</td>
+                            <td>Comentario:</td>
+                        </tr>
+                        <tr *ngFor="let e of customerEngagamentes">
+                            <td>{{e.paymentPromiseDate | date:'dd/MM/yyyy'}}</td>
+                            <td>{{e.numberOfFees}}</td>
+                            <td>{{e.amountFees}}</td>
+                            <td>{{e.agreedDebt}}</td>
+                            <td>{{e.initialDelivery}}</td>
+                            <td>
+                                <!-- {{getBranchOfficeById(e.idBranchOffice)}} -->
+                            </td>
+                            <td>{{e.dateReminder | date:'dd/MM/yyyy HH:mm'}}Hs</td>
+                            <td>{{e.message}}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div *ngIf="showEventsHistory">
+                    <events-customer *ngIf="currentCustomer" [customer-id]="currentCustomer.id"></events-customer>
+                </div>
+            </div>
+        </div>
+    </div>
+</mat-card>

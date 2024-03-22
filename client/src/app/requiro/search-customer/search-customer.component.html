@@ -1,0 +1,71 @@
+<div class="toolbar-notifications" (furyClickOutside)="onClickOutside()" fxFlex="grow" fxLayout="row"
+  fxLayoutAlign="start center">
+  <button class="button" type="button" mat-button (click)="toggleDropdown()" [class.open]="isOpen" fxFlex="grow">
+    <mat-icon _ngcontent-c29="" class="mat-icon material-icons" role="img" aria-hidden="true">search</mat-icon>
+  </button>
+  <div class="dropdown" [class.open]="isOpen">
+    <fury-card>
+      <fury-card-content class="card-content">
+        <fury-scrollbar class="content">
+          <div fxLayout="column" style="margin:4px;">
+            <div fxLayout.gt-sm="row" fxLayoutGap.gt-sm="16px">
+              <mat-form-field>
+                <input #input matInput placeholder="Nombre" [(ngModel)]="name">
+              </mat-form-field>
+              <mat-form-field>
+                <input #input matInput placeholder="Apellido" [(ngModel)]="lastname">
+              </mat-form-field>
+              <mat-form-field>
+                <input #input matInput placeholder="CI" [(ngModel)]="ci">
+              </mat-form-field>
+              <mat-form-field>
+                <input #input matInput placeholder="Teléfono" [(ngModel)]="phone">
+              </mat-form-field>
+              <button [title]="isSearchDisabled()?'Al menos uno de los campos de busqueda debe tener 3 caracteres':''"
+                class="search-button" mat-button (click)="find()" fxFlex="grow" [disabled]="isSearchDisabled()">
+                <mat-icon>search</mat-icon>
+              </button>
+            </div>
+            <div [hidden]="!customersSearch || customersSearch.length === 0">
+              <fury-scrollbar class="dashboard" furyPage furyPagePadding fxLayout="column">
+                <div furyScrollbar #contentScroll style="max-height: 450px;">
+                  <mat-table #table [dataSource]="dataSource" matSort class="table table-condensed">
+                    <ng-container matColumnDef="names">
+                      <mat-header-cell *matHeaderCellDef mat-sort-header> Nombres </mat-header-cell>
+                      <mat-cell *matCellDef="let element">
+                        <span (click)="customerDatail(element.id)" style="cursor: pointer;">
+                          {{ element.names}}
+                        </span>
+                      </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="lastnames">
+                      <mat-header-cell *matHeaderCellDef mat-sort-header> Apellidos </mat-header-cell>
+                      <mat-cell *matCellDef="let element">
+                        <span (click)="customerDatail(element.id)" style="cursor: pointer;">
+                          {{ element.lastnames }}
+                        </span>
+                      </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="ci">
+                      <mat-header-cell *matHeaderCellDef> CI </mat-header-cell>
+                      <mat-cell *matCellDef="let element">
+                        <span (click)="customerDatail(element.id)" style="cursor: pointer;">
+                          {{element.ci}}
+                        </span>
+                      </mat-cell>
+                    </ng-container>
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                  </mat-table>
+                  <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]"
+                    [showFirstLastButtons]="true">
+                  </mat-paginator>
+                </div>
+              </fury-scrollbar>
+            </div>
+          </div>
+        </fury-scrollbar>
+      </fury-card-content>
+    </fury-card>
+  </div>
+</div>

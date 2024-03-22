@@ -1,0 +1,41 @@
+<fury-scrollbar class="dashboard" furyPage furyPagePadding fxLayout="column">
+  <div furyScrollbar #contentScroll>
+    <div class="content" fxLayout="column" fxLayoutGap="24px">
+      <mat-card>
+        <mat-card-title>Clientes por campañas</mat-card-title>
+
+        <div class="example-container mat-elevation-z8" style="width: 45%;margin: 0 auto;padding: 30px;">
+
+          <mat-form-field *ngIf="_users" [hidden]="isLoading" style="width: 260px">
+            <mat-select placeholder="Usuario" [(ngModel)]="idUserSelect">
+              <mat-option *ngFor="let u of _users" [value]="u.id">{{u.lastname}}, {{u.firstname}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <button [hidden]="isLoading" mat-raised-button color="primary" (click)="getCustomerByCampaignByUser()">Enviar</button>
+
+          <mat-spinner *ngIf="isLoading"></mat-spinner>
+
+          <div [hidden]="isLoading">
+            <mat-table #table [dataSource]="dataSource" matSort>
+
+              <ng-container matColumnDef="campaign">
+                <mat-header-cell *matHeaderCellDef> Campaña </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{ getCampaign(element.data) }} </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="count">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Cantidad </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.count}} </mat-cell>
+              </ng-container>
+
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+            </mat-table>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+</fury-scrollbar>

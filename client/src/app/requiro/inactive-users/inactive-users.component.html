@@ -1,0 +1,60 @@
+<fury-scrollbar class="overflow-container">
+  <mat-card>
+    <mat-card-content>
+      <div fxLayout="column" style="margin:4px;">
+        <mat-tab-group>
+          <mat-tab label="Clientes sin asignar">
+            <mat-card *ngIf="paginator.length > 0 && !loadingEvents">
+              <mat-card-content>
+                <mat-form-field fxFlex>
+                  <input matInput placeholder="Cola" [matAutocomplete]="auto" [(ngModel)]="queueSelected" [formControl]="queueCtrl">
+                  <mat-autocomplete #auto="matAutocomplete">
+                    <mat-option *ngFor="let state of filteredStates | async" [value]="state.name">
+                      <span>{{ state.name }}</span>
+                    </mat-option>
+                  </mat-autocomplete>
+                  <button *ngIf="queueCtrl.value" type="button" mat-icon-button (click)="queueCtrl.reset()" matSuffix>
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </mat-form-field>
+              </mat-card-content>
+            </mat-card>
+            <div [hidden]="paginator.length === 0 || loadingEvents">
+              <mat-table #table [dataSource]="dataSource" matSort>
+                <ng-container matColumnDef="assign">
+                  <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                  <mat-cell *matCellDef="let element">
+                    <mat-checkbox [(ngModel)]="element.assigned"></mat-checkbox>
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ci">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Cedula </mat-header-cell>
+                  <mat-cell *matCellDef="let element"> {{element.ci}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="names">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Cliente </mat-header-cell>
+                  <mat-cell *matCellDef="let element"> {{element.names}} {{element.lastnames}} </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+              </mat-table>
+              <mat-paginator #paginator [pageSize]="5" [hidden]="paginator.length === 0" [pageSizeOptions]="[5, 10, 20]" [showFirstLastButtons]="true">
+              </mat-paginator>
+            </div>
+            <div fxLayout="column" style="margin:4px;" *ngIf="paginator.length === 0" style="margin-top: 50px;width: 100%; text-align: center;">
+              <span class="mat-display-1" style="margin: 100px;">No existen clientes sin asignar.</span>
+            </div>
+            <div class="actions" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="8px">
+              <button mat-raised-button color="primary" (click)="saveData()" *ngIf="queueCtrl.status !== 'INVALID'">Guardar</button>
+              <button mat-raised-button color="primary" *ngIf="queueCtrl.status === 'INVALID'" disabled>Guardar</button>
+            </div>
+          </mat-tab>
+          <mat-tab label="Cambiar clientes de cola">
+            <assign-customers></assign-customers>            
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+
+    </mat-card-content>
+  </mat-card>
+</fury-scrollbar>
