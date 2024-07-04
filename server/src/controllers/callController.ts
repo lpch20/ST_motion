@@ -50,10 +50,15 @@ export class CallController extends MainController {
     private invokeCall(req: express.Request, res: express.Response, account: Account, dbName: string) {
         let source: string = req.body.source;
         let dest: string = req.body.dest;
+        let accountId = req.body.idCustomer;
         //let hostTarget = "200.108.253.229";
-	let hostTarget = "200.40.68.26";
+        let hostTarget = "200.40.68.26";
         let portTarget = 6036;
-        let pathTarget = `/rest/originateCall?source=${source}&context=default_0&destination=9${dest}&timeout=12`;
+
+        let identification = req.body.identification
+        console.log(`?source=${source}&customer_id=${accountId}&context=crm&destination=9${dest}&timeout=12&identification=${identification}`)
+
+        let pathTarget = `/rest/originateCall?source=${source}&customer_id=${accountId}&var_customer_id=${accountId}&context=crm&destination=9${dest}&timeout=12&var_identification=${identification}`;
         let url = 'http://' + hostTarget + ':' + portTarget + pathTarget;
 
         const LOCAL_ADDRESS = '179.27.98.14';

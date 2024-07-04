@@ -1,10 +1,10 @@
-import { MainController } from './mainController';
-import { ResultCode } from '../../../datatypes/result';
 import * as express from 'express';
-import { ControllerDBMaster } from '../../motionLibJS/serverSide/masterClientDBFramework/controllers/controllerDBMaster';
-import { ControllerDBClientsConnections } from '../../motionLibJS/serverSide/masterClientDBFramework/controllers/controllerDBClient';
+import { ResultCode } from '../../../datatypes/result';
 import { ControllerDBClientsPromiseConnections } from '../../dLabDB/serverSide/masterClientDBFramework/controllers/controllerPromiseDBClient';
 import { NewACL } from '../../motionLibJS/serverSide/acl/newACL';
+import { ControllerDBClientsConnections } from '../../motionLibJS/serverSide/masterClientDBFramework/controllers/controllerDBClient';
+import { ControllerDBMaster } from '../../motionLibJS/serverSide/masterClientDBFramework/controllers/controllerDBMaster';
+import { MainController } from './mainController';
 const http = require('http');
 
 export class GetPaidController extends MainController {
@@ -15,21 +15,22 @@ export class GetPaidController extends MainController {
         acl: NewACL) {
         super(masterDBController, controllerConnections, controllerPromiseConnections, acl);
     }
- 
+
     public get = (req: express.Request, res: express.Response): void => {
         console.log('GetPaidController.get');
         this.makeCall(req, res, 'get');
     }
     public post = (req: express.Request, res: express.Response): void => {
         console.log('GetPaidController.post');
-        this.makeCall(req, res, 'post'); 
+        this.makeCall(req, res, 'post');
     }
 
     private makeCall(req: express.Request, res: express.Response, type: string) {
         let source: string = req.query.source;
         let dest: string = req.query.dest;
+        let agent: string = req.query.agent;
         const makeCallUrl = 'http://190.64.151.34:5003/makecall.php';
-        http.get(makeCallUrl + `?origen=${source}&destino=${dest}`, (resp: any) => {
+        http.get(makeCallUrl + `?origen=${source}&destino=${dest}&agent=${agent}`, (resp: any) => {
             let data = '';
             // A chunk of data has been recieved.
             resp.on('data', (chunk: any) => {

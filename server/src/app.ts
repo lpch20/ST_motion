@@ -38,6 +38,7 @@ import { ReportsRoute } from './routes/reports';
 import { ScheduleRoute } from './routes/schedule';
 import { SmsRoute } from './routes/sms';
 import { UsersRoute } from './routes/users';
+import { ParametersRoute } from './routes/parameters';
 
 
 //require('console-ten').init(console);
@@ -122,6 +123,8 @@ export class App {
 		app.use('/api/branchOffice', new BranchOfficeRoute(this.masterDBController, this.controllerConnections, this.controllerPromiseConnections, this.acl).routes());
 		app.use('/api/action', new ActionRoute(this.masterDBController, this.controllerConnections, this.controllerPromiseConnections, this.acl).routes());
 		app.use('/api/clientErrorLog', new ClientErrorLoggerRoute(this.masterDBController, this.controllerConnections, this.controllerPromiseConnections, this.acl).routes())
+		app.use('/api/parameters', new ParametersRoute(this.masterDBController, this.controllerConnections, this.controllerPromiseConnections, this.acl).routes());
+		
 		// poc
 		app.use('/api/getpaid', new GetPaidRoute(this.masterDBController, this.controllerConnections, this.controllerPromiseConnections, this.acl).routes());
 
