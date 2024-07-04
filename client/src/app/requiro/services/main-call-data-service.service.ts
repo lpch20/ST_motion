@@ -9,6 +9,7 @@ export class MainCallDataServiceService {
   private customerEvent = new BehaviorSubject<{ok:boolean,nextCall:string}>({ok:false,nextCall:""});
   private _endTimerEvent = new BehaviorSubject<boolean>(false);  
   private _customerIdEvent = new BehaviorSubject<number>(0);
+ private _toggleFlagEvent = new BehaviorSubject<boolean>(false);
   private _customerChange = new BehaviorSubject<Customer>(null);
   private _customerDataChange = new BehaviorSubject<Customer>(null);
   private _logout = new BehaviorSubject<boolean>(false);
@@ -34,6 +35,7 @@ export class MainCallDataServiceService {
    * Atributo utilizado para escuchar cambio de customer
    */
   customerIdEvent = this._customerIdEvent.asObservable();
+  toggleFlagEvent = this._toggleFlagEvent.asObservable();
   logoutEvent = this._logout.asObservable();
   playerEvent = this._player.asObservable();
   breakEvent = this._break.asObservable();
@@ -51,6 +53,14 @@ export class MainCallDataServiceService {
    */
   sendCustomerIdEvent(id:number):void{
     this._customerIdEvent.next(id);
+  }
+
+   /**
+   * Evento que se envia cuado cambia se selecciona la lupa.
+   * @param flag {boolean} valor de seleccion
+   */
+   sendToggleFlagEvent(flag:boolean):void{
+    this._toggleFlagEvent.next(flag);
   }
 
   sendLogoutEvent():void{

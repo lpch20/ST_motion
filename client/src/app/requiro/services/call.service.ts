@@ -11,11 +11,14 @@ export class CallService {
   constructor(private http: HttpClient, private tokenService: TokenService) { }
 
   makeCall(idCustomer: number, sourcePhone: string, targetPhone: string): Observable<ResultWithData<any>> {
-    return this.http.post<ResultWithData<any[]>>(this.callURL + "/makeCall", { idCustomer, source: sourcePhone, dest: targetPhone });
+    return this.http.post<ResultWithData<any[]>>(this.callURL + "/makeCall", { idCustomer, source: sourcePhone, dest: targetPhone,agent:"none" });
   }
 
-  makeCallFromAgent(idCustomer: number, phone: string): Observable<ResultWithData<any>> {
+  makeCallFromAgent(idCustomer: number, phone: string,ci:string): Observable<ResultWithData<any>> {
     let agent = this.tokenService.getAgentToken();
-    return this.http.post<ResultWithData<any[]>>(this.callURL + "/makeCall", { idCustomer, source: agent, dest: phone });
+    let user=localStorage.getItem('user') || "none"
+    if(agent==null)
+      agent=user;
+    return this.http.post<ResultWithData<any[]>>(this.callURL + "/makeCall", { idCustomer, source: agent, dest: phone,agent:agent,identification:ci });
   }
 }

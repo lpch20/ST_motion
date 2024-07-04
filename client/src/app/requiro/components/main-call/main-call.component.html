@@ -8,12 +8,16 @@
 <dlab-timer [time]="timerTime" [player]="player" (timer)=timerFinished($event) *ngIf="timerActive && currentCustomer && !ready && !error"></dlab-timer>
 
 <div *ngIf="!timerActive" style="margin: 15px;"></div>
-<customer-player [customer]="currentCustomer" [index-current-phone]="indexCurrentPhone" [timerActive]="timerActive" [playerStatus]="player" (detailEvent)="showDetail($event)" (callPhone)="initCall($event)" *ngIf="currentCustomer && !ready && !error"></customer-player>
+
+<customer-player [customer]="currentCustomer" [index-current-phone]="indexCurrentPhone" [timerActive]="timerActive" [contador]="counter" [playerStatus]="player" (detailEvent)="showDetail($event)" (callPhone)="initCall($event)" *ngIf="currentCustomer && !ready && !error"></customer-player>
 
 <fury-scrollbar class="dashboard" furyPage furyPagePadding fxLayout="column" *ngIf="(ready  && !error) || _showDetails">
     <div furyScrollbar #contentScroll [ngClass]="{'customerDetail': !ready}">
         <div class="content" fxLayout="column" fxLayoutGap="24px">
             <!--<div *ngIf="ready  && !error && currentCustomer"> -->
+            <div style="text-align:right;font-size: xx-large;">
+                <label *ngIf="temporizadorActive">Tiempo restante: {{labelTemporizador}}</label>
+            </div>    
             <div *ngIf="currentCustomer">
                 <event-customer [customer-id]="currentCustomer.id" [idsPayment]="idsPayment" [timerActive]="timerActive" [index-current-phone]="indexCurrentPhone"></event-customer>
             </div>

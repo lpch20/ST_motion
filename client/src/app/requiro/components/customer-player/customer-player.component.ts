@@ -18,6 +18,7 @@ export class CustomerPlayerComponent implements OnInit, OnChanges {
   indexPhone: number = 0;
   @Input() playerStatus: boolean;
   @Input() timerActive: boolean;
+  @Input() contador: number;
   @Output() detailEvent = new EventEmitter<boolean>();
   @Output() callPhone = new EventEmitter<boolean>();
   public _showDetail: boolean = false;

@@ -3,9 +3,12 @@ import { MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
 import { Break } from '../../../../../datatypes/Break';
 import { User } from '../../../../../datatypes/user';
+import { ParameterType } from '../../../../../datatypes/ParameterType';
+
 import { BreakService } from '../services/break.service';
 import { TokenService } from '../services/token.service';
 import { UsersService } from '../services/users.service';
+import { ParameterService } from '../services/parameter.service';
 import { UserCreateUpdateComponent } from './user-create-update/user-create-update.component';
 
 @Component({
@@ -17,12 +20,17 @@ export class UsersComponent implements OnInit {
 
   users: User[];
   rols: Map<number, { id: number, name: string }>;
-
+  conn_time:ParameterType;
+  request_time:ParameterType;
+  autocall_time:ParameterType;
+  parameters: ParameterType[];
   constructor(
     private userService: UsersService,
     private tokenService: TokenService,
     private dialog: MatDialog,
     private breakService: BreakService,
+    private parameterService: ParameterService,
+    
     private router: Router
   ) { };
 
@@ -48,6 +56,25 @@ export class UsersComponent implements OnInit {
                   for (let i = 0; i < resultRols.length; i++) {
                     this.rols.set(resultRols[i].id, resultRols[i]);
                   }
+                  this.parameterService.getParameters().subscribe(
+                    response => {
+                        
+                        if (response.result > 0 && response.data && response.data.length > 0) {
+                           this.parameters= response.data;
+                           
+                            this.conn_time=this.parameters.filter(x => x.name.toUpperCase() == "CONN_TIME")[0];
+                            this.request_time=this.parameters.filter(x => x.name.toUpperCase() == "REQUEST_TIME")[0];
+                            this.autocall_time=this.parameters.filter(x => x.name.toUpperCase() == "AUTOCALL_TIME")[0];
+                            localStorage.setItem('conn_time', JSON.stringify(this.conn_time));
+                            localStorage.setItem('request_time', JSON.stringify(this.request_time));
+                            localStorage.setItem('autocall_time', JSON.stringify(this.autocall_time));
+                        }
+                    },
+                    error => {
+                        console.error(error);
+                    }
+                );
+        
                   this.userService.getUsers().subscribe(
                     response => {
                       if (response.result > 0) {

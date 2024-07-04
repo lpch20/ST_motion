@@ -87,7 +87,7 @@ export class CustomerDataComponent implements OnInit, OnChanges {
 
   callNumber(tel: string, index: number): void {
     this.changeIndexPhone.emit(index);
-    this.callService.makeCallFromAgent(this.currentCustomer.id, tel).subscribe(
+    this.callService.makeCallFromAgent(this.currentCustomer.id, tel,this.currentCustomer.ci).subscribe(
       response => {
         if (response.result === ResultCode.Error) {
           alert(response.message);

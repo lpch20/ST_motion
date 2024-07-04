@@ -20,6 +20,7 @@ import { ActionService } from './requiro/services/action.service';
 import { AuthenticateService } from './requiro/services/authenticate.service';
 import { BranchOfficeService } from './requiro/services/branch-office.service';
 import { BreakService } from './requiro/services/break.service';
+import { ParameterService } from './requiro/services/parameter.service';
 import { CacheService } from './requiro/services/cache-service';
 import { CallService } from './requiro/services/call.service';
 import { CampaignService } from './requiro/services/campaign.service';
@@ -79,6 +80,7 @@ registerLocaleData(localeEsCa, localeEsUyExtra);
     AuthenticateService,
     ScheduleService,
     BreakService,
+    ParameterService,
     EventTypeService,
     CallService,
     ReportsService,
