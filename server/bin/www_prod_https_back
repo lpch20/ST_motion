@@ -18,8 +18,8 @@ var fs = require('fs');
 //     cert_g2 = fs.readFileSync('/root/https/stmotion/gd_bundle-g2-g1_3.crt').toString();
 
 var privateKey = fs.readFileSync('/root/https/stmotion/stmotion.io.key').toString(),
-    certificate = fs.readFileSync('/root/https/stmotion/1186ba582e157d46.crt').toString(),
-    cert_g = fs.readFileSync('/root/https/stmotion/gd_bundle-g2-g1_1.crt').toString(),
+    certificate = fs.readFileSync('/root/https/stmotion/47f0304078f3f3c.crt').toString(),
+    cert_g = fs.readFileSync('/root/https/stmotion/gd_bundle-g2-g1.crt').toString(),
     cert_g1 = fs.readFileSync('/root/https/stmotion/gd_bundle-g2-g1_2.crt').toString(),
     cert_g2 = fs.readFileSync('/root/https/stmotion/gd_bundle-g2-g1_3.crt').toString();
 
