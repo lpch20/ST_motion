@@ -68,6 +68,7 @@ export class UsersComponent implements OnInit {
                             localStorage.setItem('conn_time', JSON.stringify(this.conn_time));
                             localStorage.setItem('request_time', JSON.stringify(this.request_time));
                             localStorage.setItem('autocall_time', JSON.stringify(this.autocall_time));
+                            localStorage.removeItem("currentCustomer")
                         }
                     },
                     error => {

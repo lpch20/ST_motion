@@ -99,7 +99,7 @@ export class MainCallComponent implements OnInit, OnDestroy {
 
 
        // this.startTimerCheck();
-       
+       window.localStorage.setItem("callMethod","NONE");
         //Ubicamos el tiempo para el contador de las llamadas automaticas
         let autocall=localStorage.getItem("autocall_time") || "none";
         if(autocall!=="none")
@@ -394,6 +394,7 @@ private lastCallService(customerId:string):void{
             response => {
                 if (response.ok) {
                     if (response.nextCall === Redirect.OtherCustomer) {
+                        alert("se dio next")
                         // TODO arreglar solucion provisoria
                         setTimeout(() => {
                             this.ready = false;
@@ -512,8 +513,13 @@ private lastCallService(customerId:string):void{
                         this.customers = response.data;
                         const firstCustomer = response.data[0];
                         if (firstCustomer) {
-                            this.setCurrentCustomer(firstCustomer.id);
-                        }
+                            this.setCurrentCustomer(firstCustomer.id); 
+                            console.log("SE seteó el customer")                          
+                        }                       
+                         //SE CAMBIó DE CUSTOMER Y NO PASÖ POR EL TIMER
+                         console.log("SE CAMBIó DE CUSTOMER Y NO PASÖ POR EL TIMER")
+                        
+
                     } else { // no existen otros customer que llamar
 
                         this.usersService.getRolCurrentUser().subscribe(
@@ -569,8 +575,29 @@ private lastCallService(customerId:string):void{
                     this.counter=15;    
                 }
         
-                this.startTimerPrincipal();              
+
+
+                this.startTimerPrincipal();   
+                
+                    
+
                 this.currentCustomer = this.customerModel.customer;
+
+                if(this.ready && !this.error)
+                {
+                    if(typeof localStorage.getItem("currentCustomer")==='undefined' || 
+                            localStorage.getItem("currentCustomer")!==this.currentCustomer.id.toString())
+                                {
+                                    console.log("se llamará otro customer")
+                                    window.localStorage.setItem("currentCustomer",this.currentCustomer.id.toString());
+                                    if(this.indexCurrentPhone!==null)
+                                    this.callPhoneByIndex(this.indexCurrentPhone);
+                        
+
+                                }
+                }
+
+                
                 this.mainCallData.updateCustomerInfo(this.currentCustomer);
                 this.loadDebt();
             }
@@ -611,7 +638,8 @@ private lastCallService(customerId:string):void{
                     this.ready=true;
                     this.countDown.unsubscribe();
                     this.callPhoneByIndex(this.indexCurrentPhone);
-                    
+                    window.localStorage.setItem("currentCustomer",this.currentCustomer.id.toString());
+                    window.localStorage.setItem("callMethod","AUTOTIMER");
                     return false;
                 }
                 return --this.counter;
