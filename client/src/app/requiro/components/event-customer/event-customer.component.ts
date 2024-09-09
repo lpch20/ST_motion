@@ -1,13 +1,14 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange, SimpleChanges } from '@angular/core';
 import { ActionService } from 'app/requiro/services/action.service';
 import { Subscription } from 'rxjs';
-import 'rxjs/add/observable/timer';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/timer';
 import { Action } from '../../../../../../datatypes/Action';
 import { BranchOffice } from '../../../../../../datatypes/BranchOffice';
 import { Campaign } from '../../../../../../datatypes/Campaign';
-import { ClientEvent, ICustomerEvent } from '../../../../../../datatypes/clientEvent';
 import { Customer } from '../../../../../../datatypes/Customer';
+import { ParameterType } from '../../../../../../datatypes/ParameterType';
+import { ClientEvent, ICustomerEvent } from '../../../../../../datatypes/clientEvent';
 import { EventType, Redirect } from '../../../../../../datatypes/eventType';
 import { ResultCode } from '../../../../../../datatypes/result';
 import { Engagement } from '../../../../../../datatypes/viewDataType/engagement';
@@ -21,6 +22,7 @@ import { EventTypeService } from '../../services/event-type.service';
 import { EventsService } from '../../services/events.service';
 import { MainCallDataServiceService } from '../../services/main-call-data-service.service';
 import { TokenService } from '../../services/token.service';
+
 
 @Component({
   selector: 'event-customer',
@@ -42,6 +44,7 @@ export class EventCustomerComponent implements OnInit, OnChanges {
 
   private subscription: Subscription;
   private subscriptionProgressive: Subscription;
+  private activateEventSubscription: Subscription;
   private timer: Observable<any>;
   private eventTypeMap: Map<number, EventType>;
   newEngagement: Engagement;
@@ -50,7 +53,9 @@ export class EventCustomerComponent implements OnInit, OnChanges {
   messageCtrl: FormControl;
   customer: Customer;
   eventTypes: EventType[];
+  evt: EventType;
   actions: Action[];
+  acts: Action;
   champaign: Campaign[];
   branchOffices: BranchOffice[];
   eventAnnotationClass: string;
@@ -69,6 +74,9 @@ export class EventCustomerComponent implements OnInit, OnChanges {
 
   _customerId: number = 0;
   customerModel: CustomerModel;
+  message: ParameterType;
+  observation: string = '';
+
 
   constructor(
     private eventTypeService: EventTypeService,
@@ -107,6 +115,13 @@ export class EventCustomerComponent implements OnInit, OnChanges {
     }
   }
 
+  private cleanSubscriptions(): void {
+
+    this.activateEventSubscription.unsubscribe();
+  }
+  ngOnDestroy() {
+    this.cleanSubscriptions();
+  }
   startWriting(): void {
     this.writing = true;
   }
@@ -139,6 +154,18 @@ export class EventCustomerComponent implements OnInit, OnChanges {
         console.error(err);
       }
     );
+
+    //PARAMETRO DE MENSAJE PERSONALIZADO
+    let cn = localStorage.getItem("message") || "none";
+    if (cn !== "none") {
+      this.message = JSON.parse(cn);
+      this.observation = this.message.description;
+    }
+    else {
+      this.observation = 'Observación automática por timer finalizado';
+    }
+
+
     this.eventAnnotationClass = "eventAnnotationGreen";
 
     this.eventTypeService.getAll().subscribe(
@@ -219,7 +246,46 @@ export class EventCustomerComponent implements OnInit, OnChanges {
       err => {
         console.error(err);
       });
+
+
+
   }
+
+  ngAfterViewInit() {
+    this.initEventCustomer();
+  }
+
+  private initEventCustomer(): void {
+    this.initListeningEvents();
+  }
+
+  private initListeningEvents(): void {
+
+    //SUSCripcion para el fin del timer
+    this.activateEventSubscription = this.mainCallData.activateEvent.subscribe(
+      t => {
+
+        console.log('activateEvent', t);
+        if (t) {
+          // TODO arreglar solucion provisoria
+          setTimeout(() => {
+            this.setValuesTimerOff().then(res => {
+              setTimeout(() => {
+                this.saveAnnotation();
+              }, 5000);
+            });
+
+          });
+        }
+      },
+      error => {
+        console.error(error);
+      }
+    );
+
+
+  }
+
 
   checkValidForm(): boolean {
     if (this.showMessage()) {
@@ -230,6 +296,18 @@ export class EventCustomerComponent implements OnInit, OnChanges {
       let result: boolean = (this.resultCtrl && this.resultCtrl.status !== 'INVALID');
       return result;
     }
+  }
+
+  setValuesTimerOff(): Promise<any> {
+    return Promise.resolve((() => {
+      this.evt = this.eventTypes.filter(et => et.name.toLocaleUpperCase() === "LLAMADA FINALIZADA")[0];
+      this.acts = this.actions.filter(et => et.name.toLocaleUpperCase() === "OTRO")[0];
+      this.resultInteraction = this.evt.id;
+      this.actionInteraction = this.acts.id;
+      this.newMessage = this.observation;
+      this.eventChange()
+      return true;
+    })());
   }
 
   toogleHistory(): void {
@@ -248,6 +326,8 @@ export class EventCustomerComponent implements OnInit, OnChanges {
 
   saveAnnotation(): void {
     if (this.checkValidForm()) {
+
+
       this.firstChangeCampaignOrResult = true;
       if (this.subscriptionProgressive) {
         this.subscriptionProgressive.unsubscribe();
@@ -357,7 +437,7 @@ export class EventCustomerComponent implements OnInit, OnChanges {
       /*
       if (this.firstChangeCampaignOrResult) {
         this.firstChangeCampaignOrResult = false;
-
+    
         this.subscriptionProgressive = this.timer.subscribe(
           t => {
             this.progressiveTimer++;
@@ -367,7 +447,7 @@ export class EventCustomerComponent implements OnInit, OnChanges {
         this.subscription = this.timer.subscribe(t => {
           if (this.totalTime > 0)
             this.totalTime--;
-
+    
           if (this.totalTime >= 7) {
             this.eventAnnotationClass = "eventAnnotationGreen";
           } else if (this.totalTime < 7 && this.totalTime > 3) {
@@ -385,7 +465,7 @@ export class EventCustomerComponent implements OnInit, OnChanges {
       for (let i = 0; i < this.eventTypes.length; i++) {
         eventsTypes.set(this.eventTypes[i].id, this.eventTypes[i]);
       }
-
+    
       if (this.currentCustomer && this.currentCustomer.eventData && 
         this.currentCustomer.eventData.event && this.currentCustomer.eventData.event.eventType) {
         this.totalTime = eventsTypes.get(this.currentCustomer.eventData.event.eventType).time - this.progressiveTimer;

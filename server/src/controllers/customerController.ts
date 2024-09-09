@@ -672,6 +672,8 @@ export class CustomerController extends MainController {
                     if (response.result > 0) {
                         var idUser = response.data[0].id;
                         if (req.headers['user'] !== "supervisor_test") {
+
+                            console.log("se llamará al SetItemQueueFinish con el user: " + idUser + " y el customer " + req.body.idCustomer);
                             this.customerModel.setItemQueueFinish(idUser, req.body.idCustomer, con, (result: any) => {
                                 res.send(result);
                             });

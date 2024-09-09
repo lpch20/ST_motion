@@ -1,17 +1,18 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import { Customer } from '../../../../../../datatypes/Customer';
-import { Observable } from 'rxjs/Observable';
-import { CustomersService } from '../../services/customers.service';
-import { CallService } from '../../services/call.service';
-import { DepartamentsService } from '../../services/departaments.service';
-import { map, startWith } from 'rxjs/operators';
-import { of } from 'rxjs/observable/of';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { FieldValidator } from '../../../../../../server/src/DLabLib/FieldValidator';
-import { ResultCode } from '../../../../../../datatypes/result';
-import { MainCallDataServiceService } from '../../services/main-call-data-service.service';
 import * as _ from 'lodash';
+import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs/observable/of';
+import { map, startWith } from 'rxjs/operators';
+import { Customer } from '../../../../../../datatypes/Customer';
+import { DebtData } from '../../../../../../datatypes/DebtData';
+import { ResultCode } from '../../../../../../datatypes/result';
+import { FieldValidator } from '../../../../../../server/src/DLabLib/FieldValidator';
+import { CallService } from '../../services/call.service';
 import { CareerService } from '../../services/career.service';
+import { CustomersService } from '../../services/customers.service';
+import { DepartamentsService } from '../../services/departaments.service';
+import { MainCallDataServiceService } from '../../services/main-call-data-service.service';
 
 @Component({
   selector: 'customer-data',
@@ -21,6 +22,7 @@ import { CareerService } from '../../services/career.service';
 export class CustomerDataComponent implements OnInit, OnChanges {
 
   @Input() currentCustomer: Customer;
+  @Input() currentDebts: DebtData[];
   @Output() makeACall: EventEmitter<string> = new EventEmitter<string>();
   @Output() changeIndexPhone = new EventEmitter<number>();
 
@@ -86,8 +88,11 @@ export class CustomerDataComponent implements OnInit, OnChanges {
   }
 
   callNumber(tel: string, index: number): void {
+
+    this.mainCallData.sendToggleCallEvent(tel);
     this.changeIndexPhone.emit(index);
-    this.callService.makeCallFromAgent(this.currentCustomer.id, tel,this.currentCustomer.ci).subscribe(
+    let portfolio = this.currentDebts[0].portfolio !== null ? this.currentDebts[0].portfolio : 'none';
+    this.callService.makeCallFromAgent(this.currentCustomer.id, tel, this.currentCustomer.ci, portfolio).subscribe(
       response => {
         if (response.result === ResultCode.Error) {
           alert(response.message);
@@ -191,8 +196,8 @@ export class CustomerDataComponent implements OnInit, OnChanges {
   }
 
   public saveCustomerData(): void {
-    this.currentCustomer.idCity = this.citySelected  ? this.citySelected.id : 0;
-    this.currentCustomer.idDepartment = this.departmentSelected  ? this.departmentSelected.id : 0;
+    this.currentCustomer.idCity = this.citySelected ? this.citySelected.id : 0;
+    this.currentCustomer.idDepartment = this.departmentSelected ? this.departmentSelected.id : 0;
     this.currentCustomer.idCareer = this.careerSelected ? this.careerSelected.id : 0;
 
     const tels = this.currentCustomer.getPhones();

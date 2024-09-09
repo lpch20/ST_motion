@@ -645,23 +645,29 @@ export class CustomerModel extends MainModel {
 
     setItemQueueFinish(idUser: number, idCustomer: number, con: IQueryableConnection, callBack: (r: ResultWithData<{ id: number }>) => void): void {
         const QUERY: string = 'SELECT * FROM queue_user WHERE idUser = ?';
+
         con.query(QUERY, [idUser], (err: any, resultQuery: any) => {
             if (!!err) {
                 this.errorModel(con, err, callBack);
             } else {
-                const queryFinish: string = 'UPDATE item_queue SET status = "called" WHERE idQueue = ? AND idCustomer = ?';
-                con.query(queryFinish, [resultQuery[0].idQueue, idCustomer], (err: any, resultQueryFinish: any) => {
-                    if (!!err) {
-                        console.log(`ERROR => idUser => ${idUser} , idCustomer =>  ${idCustomer}`);
-                        this.errorModel(con, err, callBack);
-                    } else {
-                        callBack({
-                            result: ResultCode.OK,
-                            message: 'OK',
-                            data: resultQueryFinish
-                        });
-                    }
-                });
+                if (resultQuery.length > 0) {
+                    const queryFinish: string = 'UPDATE item_queue SET status = "called" WHERE idQueue = ? AND idCustomer = ?';
+                    con.query(queryFinish, [resultQuery[0].idQueue, idCustomer], (err: any, resultQueryFinish: any) => {
+                        if (!!err) {
+                            console.log(`ERROR => idUser => ${idUser} , idCustomer =>  ${idCustomer}`);
+                            this.errorModel(con, err, callBack);
+                        } else {
+                            callBack({
+                                result: ResultCode.OK,
+                                message: 'OK',
+                                data: resultQueryFinish
+                            });
+                        }
+                    });
+                }//fin del result query
+                else {
+                    callBack({ result: ResultCode.Error, message: 'No existe un queue_user con ese id' });
+                }
             }
         })
     };

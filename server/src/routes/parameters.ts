@@ -1,12 +1,12 @@
-import { ParameterController} from '../controllers/parametersController';
 import express from 'express';
-import { MainRoute } from './mainRoute';
-import { ControllerDBMaster } from '../../motionLibJS/serverSide/masterClientDBFramework/controllers/controllerDBMaster';
-import { ControllerDBClientsConnections } from '../../motionLibJS/serverSide/masterClientDBFramework/controllers/controllerDBClient';
 import { ControllerDBClientsPromiseConnections } from '../../dLabDB/serverSide/masterClientDBFramework/controllers/controllerPromiseDBClient';
 import { NewACL } from '../../motionLibJS/serverSide/acl/newACL';
+import { ControllerDBClientsConnections } from '../../motionLibJS/serverSide/masterClientDBFramework/controllers/controllerDBClient';
+import { ControllerDBMaster } from '../../motionLibJS/serverSide/masterClientDBFramework/controllers/controllerDBMaster';
+import { ParameterController } from '../controllers/parametersController';
+import { MainRoute } from './mainRoute';
 
-export class ParametersRoute extends MainRoute{
+export class ParametersRoute extends MainRoute {
     constructor(private masterDBController: ControllerDBMaster,
         private controllerConnections: ControllerDBClientsConnections,
         private controllerPromiseConnections: ControllerDBClientsPromiseConnections,
@@ -20,6 +20,7 @@ export class ParametersRoute extends MainRoute{
         router.get("/getParameters", parameterController.getAllParameters);
         router.post("/endingCall", parameterController.endingCall);
         router.post("/lastCall", parameterController.getLastCall);
+        router.post("/getAgentByPhone", parameterController.getAgentByTelephone);
 
         return router;
     }

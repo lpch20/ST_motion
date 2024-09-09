@@ -115,7 +115,7 @@ export class SearchCustomerComponent implements OnInit, AfterViewInit {
         !!this.ci && this.ci != '' && this.ci.length >= 3 ||
         !!this.phone && this.phone != '' && this.phone.length >= 3);
 
-    console.log(`${!enabled} && ${!this.canSearch}`);
+    //console.log(`${!enabled} && ${!this.canSearch}`);
     return !enabled || !this.canSearch;
   }
 }

@@ -56,9 +56,17 @@ export class CallController extends MainController {
         let portTarget = 6036;
 
         let identification = req.body.identification
-        console.log(`?source=${source}&customer_id=${accountId}&context=crm&destination=9${dest}&timeout=12&identification=${identification}`)
+        let portfolio: string = req.body.portfolio as string;
 
-        let pathTarget = `/rest/originateCall?source=${source}&customer_id=${accountId}&var_customer_id=${accountId}&context=crm&destination=9${dest}&timeout=12&var_identification=${identification}`;
+        if (portfolio == 'none' && dbName == 'requiro_test') {
+            portfolio = 'LATE';
+        }
+        if (portfolio == 'none' && dbName == 'requiro_moratemprana') {
+            portfolio = 'EARLY';
+        }
+
+        let pathTarget = `/rest/originateCall?source=${source}&var_customer_id=${accountId}&context=crm&destination=9${dest}&timeout=12&var_identification=${identification}&var_portfolio=${portfolio}`;
+        console.log(pathTarget);
         let url = 'http://' + hostTarget + ':' + portTarget + pathTarget;
 
         const LOCAL_ADDRESS = '179.27.98.14';
