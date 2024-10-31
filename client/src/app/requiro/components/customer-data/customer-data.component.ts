@@ -89,7 +89,7 @@ export class CustomerDataComponent implements OnInit, OnChanges {
 
   callNumber(tel: string, index: number): void {
 
-    this.mainCallData.sendToggleCallEvent(tel);
+    //this.mainCallData.sendToggleCallEvent(tel);
     this.changeIndexPhone.emit(index);
     let portfolio = this.currentDebts[0].portfolio !== null ? this.currentDebts[0].portfolio : 'none';
     this.callService.makeCallFromAgent(this.currentCustomer.id, tel, this.currentCustomer.ci, portfolio).subscribe(

@@ -1,11 +1,11 @@
-import { Component, OnInit, EventEmitter, Output, Input, OnChanges, SimpleChanges, SimpleChange } from '@angular/core';
-import { Customer } from '../../../../../../datatypes/Customer';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange, SimpleChanges } from '@angular/core';
 import { MainCallDataServiceService } from 'app/requiro/services/main-call-data-service.service';
-import { CampaignService } from '../../services/campaign.service';
 import { Campaign } from '../../../../../../datatypes/Campaign';
-import { CustomersService } from '../../services/customers.service';
+import { Customer } from '../../../../../../datatypes/Customer';
 import { Redirect } from '../../../../../../datatypes/eventType';
 import { ResultCode } from '../../../../../../datatypes/result';
+import { CampaignService } from '../../services/campaign.service';
+import { CustomersService } from '../../services/customers.service';
 
 @Component({
   selector: 'customer-player',
@@ -18,7 +18,7 @@ export class CustomerPlayerComponent implements OnInit, OnChanges {
   indexPhone: number = 0;
   @Input() playerStatus: boolean;
   @Input() timerActive: boolean;
-  @Input() contador: number;
+  //@Input() contador: number;
   @Output() detailEvent = new EventEmitter<boolean>();
   @Output() callPhone = new EventEmitter<boolean>();
   public _showDetail: boolean = false;

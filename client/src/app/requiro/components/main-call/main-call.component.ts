@@ -1,16 +1,13 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ScrollbarDirective } from 'app/core/common/scrollbar/scrollbar.directive';
 import { MainCallDataServiceService } from 'app/requiro/services/main-call-data-service.service';
-import { interval, timer } from 'rxjs';
 import { Subscription } from 'rxjs/Rx';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/map';
 import { Break } from '../../../../../../datatypes/Break';
-import { CallHistory } from '../../../../../../datatypes/CallHistory';
 import { Customer } from '../../../../../../datatypes/Customer';
 import { DebtData } from '../../../../../../datatypes/DebtData';
-import { ParameterType } from '../../../../../../datatypes/ParameterType';
 import { ClientEvent } from '../../../../../../datatypes/clientEvent';
 import { Role } from '../../../../../../datatypes/enums';
 import { Redirect } from '../../../../../../datatypes/eventType';
@@ -44,29 +41,31 @@ export class MainCallComponent implements OnInit, OnDestroy {
     error: boolean = false;
     debts: DebtData[];
     idsPayment: string[];
-    lastCall: CallHistory[];
-    newCall: CallHistory;
-    temporizador: number = 0;
-    check: number = 0;
-    time: number = 15;
-    conn_time: ParameterType;
-    filter_time: ParameterType;
-    request_time: ParameterType;
-    autocall_time: ParameterType;
+    //lastCall: CallHistory[];
+    //newCall: CallHistory;
+    //temporizador: number = 0;
+    //check: number = 0;
+    //time: number = 15;
+    //extension_time: number = 360;
+    //conn_time: ParameterType;
+    //filter_time: ParameterType;
+    //extra_time: ParameterType;
+    //request_time: ParameterType;
+    //autocall_time: ParameterType;
     private customerModel: CustomerModel;
     //Para extender el timer en una segunda llamada
-    extension: boolean = false;
+    //extension: boolean = false;
 
     private subscriptionRedirection: Subscription;
     private customerIdEventSubscription: Subscription;
-    private toggleFlagEventSubscription: Subscription;
-    private toggleCallEventSubscription: Subscription;
+    //private toggleFlagEventSubscription: Subscription;
+    //private toggleCallEventSubscription: Subscription;
     private newCustomerEventSubscription: Subscription;
     private endTimerEventSubscription: Subscription;
 
     timerActive: boolean;
-    temporizadorActive: boolean;
-    labelTemporizador: string;
+    //temporizadorActive: boolean;
+    //labelTemporizador: string;
     breakActive: boolean;
 
     TIMER_TIME: number = 10;
@@ -75,15 +74,15 @@ export class MainCallComponent implements OnInit, OnDestroy {
     public timerTime: number;
     public player = false;
     customerDetailHeightStyle = '';
-    countDownCheck: Subscription;
-    countDownCall: Subscription;
-    mensajeEnviado: boolean = false;
+    //countDownCheck: Subscription;
+    //countDownCall: Subscription;
+    //mensajeEnviado: boolean = false;
     //#endregion fields
 
 
     //timer para pantalla principal
-    countDown: Subscription;
-    counter = 30;
+    //countDown: Subscription;
+    //counter = 30;
     //#region constructor
     constructor(
         private mainCallData: MainCallDataServiceService,
@@ -104,31 +103,32 @@ export class MainCallComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
 
         localStorage.removeItem('lastCall')
-        this.mensajeEnviado = false;
+        //this.mensajeEnviado = false;
 
-        this.startTimerCheck();
+        // this.startTimerCheck();
         window.localStorage.setItem("callMethod", "NONE");
         //Ubicamos el tiempo para el contador de las llamadas automaticas
         let autocall = localStorage.getItem("autocall_time") || "none";
-        if (autocall !== "none") {
-            this.autocall_time = JSON.parse(autocall);
-            this.counter = this.autocall_time.min_value;
 
-        }
-        else {
-            this.counter = 15;
-        }
-
-
-
-
-        if (localStorage.getItem('time') !== null) {
-            if (this.countDownCall)
-                this.countDownCall.unsubscribe();
-
-            localStorage.removeItem('time');
-        }
-
+        /* if (autocall !== "none") {
+             this.autocall_time = JSON.parse(autocall);
+             this.counter = this.autocall_time.min_value;
+ 
+         }
+         else {
+             this.counter = 15;
+         }
+ 
+ 
+ 
+ 
+         if (localStorage.getItem('time') !== null) {
+             if (this.countDownCall)
+                 this.countDownCall.unsubscribe();
+ 
+             localStorage.removeItem('time');
+         }
+          */
 
 
         this.breakService.getLastBreakByCurrentUser().subscribe(
@@ -170,99 +170,112 @@ export class MainCallComponent implements OnInit, OnDestroy {
     changeCurrentIndexPhone(index: number): void {
         this.indexCurrentPhone = index + 1;
     }
-
-    startTimerCheck() {
-
-
-        //Se busca el tiempo de pedido para buscar la ultima llamada
-        let cn = localStorage.getItem("request_time") || "none";
-        if (cn !== "none") {
-            this.request_time = JSON.parse(cn);
-            this.check = this.request_time.min_value * 1000;
-            if (this.extension) {
-                this.check = this.request_time.min_value * 2 * 1000;
-                this.extension = false;
-
-            }
-
-        }
-        else {
-            this.check = 2000;
-
-        }
-
-        let ft = localStorage.getItem("filter_time") || "none";
-        if (ft !== "none") {
-            this.filter_time = JSON.parse(ft);
-            this.time = this.filter_time.min_value;
-        }
-        else {
-            this.time = 15;
-
-        }
-
-        //Se crea un intervalo para solicitar el servicio
-        this.countDownCheck = interval(this.check).subscribe(() => {
-
-            if (typeof this.currentCustomer !== 'undefined' && !this.mensajeEnviado && this.indexCurrentPhone != 0) {
-                console.log("se está llamando a :" + this.currentCustomer.getPhones()[this.indexCurrentPhone - 1])
-                let ph = this.currentCustomer.getPhones()[this.indexCurrentPhone - 1];
-                if (typeof ph !== 'undefined' && ph != null)
-                    this.lastCallService(this.currentCustomer.id.toString(), ph, this.time);
-
-            }
-
-        });
-    }
-
-    startTimerLlamada() {
-
-        this.countDownCall = timer(0, 1000).subscribe(() => {
-
-            if (this.currentCustomer !== null) {
-
-                localStorage.setItem('time', this.temporizador.toString());
-
-
-
-                const minute = Math.floor(this.temporizador / 60);
-                let minuteString: string;
-                if (minute < 10) {
-                    minuteString = '0' + minute;
-                } else {
-                    minuteString = minute.toString();
-                }
-
-                const second = this.temporizador % 60;
-                let secondString: string;
-                if (second < 10) {
-                    secondString = '0' + second;
-                } else {
-                    secondString = second.toString();
-                }
-                this.labelTemporizador = minuteString + ':' + secondString;
-
-
-
-
-
-
-                if (this.temporizador === 0 && this.temporizadorActive) {
-
-                    console.log("finished");
-                    this.countDownCall.unsubscribe();
-                    this.temporizadorActive = false;
-                    this.mainCallData.sendActivateEvent(true);
-                    this.mensajeEnviado = true;
-                    return false;
-
-                }
-                return --this.temporizador;
-            }
-        });
-
-    }
-
+    /*
+      startTimerCheck() {
+  
+  
+          //Se busca el tiempo de pedido para buscar la ultima llamada
+          let cn = localStorage.getItem("request_time") || "none";
+          let et = localStorage.getItem("extra_time") || "none";
+          if (et !== "none") {
+              this.extra_time = JSON.parse(et);
+              this.extension_time = this.extra_time.min_value;
+          }
+          else {
+              this.extension_time = 360;
+  
+          }
+  
+  
+          if (cn !== "none") {
+              this.request_time = JSON.parse(cn);
+              this.check = this.request_time.min_value * 1000;
+              if (this.extension) {
+                  this.check = (this.request_time.min_value + this.extension_time) * 1000;
+                  this.extension = false;
+  
+              }
+  
+          }
+          else {
+              this.check = 2000;
+  
+          }
+  
+          let ft = localStorage.getItem("filter_time") || "none";
+          if (ft !== "none") {
+              this.filter_time = JSON.parse(ft);
+              this.time = this.filter_time.min_value;
+          }
+          else {
+              this.time = 15;
+  
+          }
+  
+          //Se crea un intervalo para solicitar el servicio
+          this.countDownCheck = interval(this.check).subscribe(() => {
+  
+              if (typeof this.currentCustomer !== 'undefined' && !this.mensajeEnviado && this.indexCurrentPhone != 0) {
+                  console.log("se está llamando a :" + this.currentCustomer.getPhones()[this.indexCurrentPhone - 1])
+                  let ph = this.currentCustomer.getPhones()[this.indexCurrentPhone - 1];
+                  if (typeof ph !== 'undefined' && ph != null)
+                      this.lastCallService(this.currentCustomer.id.toString(), ph, this.time);
+  
+              }
+  
+          });
+      }
+  
+      startTimerLlamada() {
+  
+          if (this.countDownCall)
+              this.countDownCall.unsubscribe();
+          this.countDownCall = timer(0, 1000).subscribe(() => {
+  
+              if (this.currentCustomer !== null) {
+  
+                  localStorage.setItem('time', this.temporizador.toString());
+  
+  
+  
+                  const minute = Math.floor(this.temporizador / 60);
+                  let minuteString: string;
+                  if (minute < 10) {
+                      minuteString = '0' + minute;
+                  } else {
+                      minuteString = minute.toString();
+                  }
+  
+                  const second = this.temporizador % 60;
+                  let secondString: string;
+                  if (second < 10) {
+                      secondString = '0' + second;
+                  } else {
+                      secondString = second.toString();
+                  }
+                  this.labelTemporizador = minuteString + ':' + secondString;
+  
+  
+  
+  
+  
+  
+                  if (this.temporizador === 0 && this.temporizadorActive) {
+  
+                      console.log("finished");
+                      this.countDownCall.unsubscribe();
+                      this.temporizadorActive = false;
+                      this.mainCallData.sendActivateEvent(true);
+                      this.mensajeEnviado = true;
+                      return false;
+  
+                  }
+                  return --this.temporizador;
+              }
+          });
+  
+      }
+  
     private lastCallService(customerId: string, phone: string, time: number): void {
         if (!this.temporizadorActive) {
             this.parameterService.getLastCall(customerId, phone, time).subscribe(
@@ -304,7 +317,7 @@ export class MainCallComponent implements OnInit, OnDestroy {
 
         }
     }
-
+ */
     stopRedirect(): void {
         this.subscriptionRedirection.unsubscribe();
         this.totalTimeRedirect = this.TIMER_TIME;
@@ -335,8 +348,8 @@ export class MainCallComponent implements OnInit, OnDestroy {
 
     private cleanSubscriptions(): void {
         this.customerIdEventSubscription.unsubscribe();
-        this.toggleFlagEventSubscription.unsubscribe();
-        this.toggleCallEventSubscription.unsubscribe();
+        //this.toggleFlagEventSubscription.unsubscribe();
+        // this.toggleCallEventSubscription.unsubscribe();
         this.newCustomerEventSubscription.unsubscribe();
         this.endTimerEventSubscription.unsubscribe();
     }
@@ -363,7 +376,7 @@ export class MainCallComponent implements OnInit, OnDestroy {
                 console.error(error);
             }
         );
-        // escucha cuando se abre la barra
+        /*/ escucha cuando se abre la barra
         this.toggleFlagEventSubscription = this.mainCallData.toggleFlagEvent.subscribe(
             responseFlag => {
                 if (responseFlag) {
@@ -386,6 +399,7 @@ export class MainCallComponent implements OnInit, OnDestroy {
                 console.error(error);
             }
         );
+       
         // escucha cuando se llama a un cliente
         this.toggleCallEventSubscription = this.mainCallData.toggleCallEvent.subscribe(
             responseTel => {
@@ -415,29 +429,33 @@ export class MainCallComponent implements OnInit, OnDestroy {
                 console.error(error);
             }
         );
-
+        */
         // Se escucha cuando se guarda un evento de cliente
         // En el caso de compromiso o contacto directo se pasa a otro cliente
         this.newCustomerEventSubscription = this.mainCallData.newCustomerEvent.subscribe(
             response => {
                 if (response.ok) {
-                    if (this.countDown)
-                        this.countDown.unsubscribe();
-                    if (this.countDownCall)
-                        this.countDownCall.unsubscribe();
-                    this.extension = true;
+                    /*
+                     if (this.countDown)
+                         this.countDown.unsubscribe();
+                     if (this.countDownCall)
+                         this.countDownCall.unsubscribe();
+                     this.extension = true;
+ 
+                     if (this.countDownCheck) {
+                         this.countDownCheck.unsubscribe();
+                     }
+                     this.startTimerCheck();
+ 
+                     this.temporizadorActive = false
+                      */
 
-                    if (this.countDownCheck) {
-                        this.countDownCheck.unsubscribe();
-                    }
-                    this.startTimerCheck();
-
-                    this.temporizadorActive = false
                     if (response.nextCall === Redirect.OtherCustomer) {
 
                         console.log(" Se cambiará de customer")
                         this.indexCurrentPhone = 0;
                         this.getNextCustomers();
+
                     } else if (response.nextCall === Redirect.OtherPhone && this.currentCustomer) {
                         if (this.indexCurrentPhone < this.currentCustomer.getPhones().length) {
                             this.newCustomerEvent = true;
@@ -468,12 +486,14 @@ export class MainCallComponent implements OnInit, OnDestroy {
                             // TODO arreglar solucion provisoria
                             setTimeout(() => {
                                 this.ready = false;
-                                if (this.countDown)
-                                    this.countDown.unsubscribe();
-                                if (this.countDownCall)
-                                    this.countDownCall.unsubscribe();
-                                if (this.countDownCheck)
-                                    this.countDownCheck.unsubscribe();
+
+                                /* if (this.countDown)
+                                     this.countDown.unsubscribe();
+                                 if (this.countDownCall)
+                                     this.countDownCall.unsubscribe();
+                                 if (this.countDownCheck)
+                                     this.countDownCheck.unsubscribe();
+                                 */
                             });
                             console.log("se llamara al queueFinish con el customer " + this.currentCustomer.id);
                             if (typeof this.currentCustomer.id !== 'undefined') {
@@ -505,7 +525,7 @@ export class MainCallComponent implements OnInit, OnDestroy {
                         console.log("no cargó los debst")
                         this.callPhoneByIndex(this.indexCurrentPhone);
                     });
-
+                    this.mainCallData.sendEndTimerEvent(false);
                 }
             },
             error => {
@@ -538,7 +558,7 @@ export class MainCallComponent implements OnInit, OnDestroy {
                 this.currentCustomer.currentIndexPhone = this.indexCurrentPhone;
                 this.currentCustomer.setCurrentPhone();
                 this.indexCurrentPhone++;
-                this.mensajeEnviado = false;
+                //this.mensajeEnviado = false;
             });
         } else {
             console.log('No tiene telefono para llamar', indexPhone);
@@ -556,7 +576,7 @@ export class MainCallComponent implements OnInit, OnDestroy {
         this.customerService.getNextCustomers().subscribe(
             response => {
                 if (response.result === ResultCode.OK) {
-                    this.mensajeEnviado = false;
+                    //this.mensajeEnviado = false;
                     this.ready = false;
                     if (response.data && response.data.length > 0) {
                         this.customers = response.data;
@@ -565,8 +585,6 @@ export class MainCallComponent implements OnInit, OnDestroy {
                             this.setCurrentCustomer(firstCustomer.id);
                             console.log("SE seteó el customer")
                         }
-                        //SE CAMBIó DE CUSTOMER Y NO PASÖ POR EL TIMER
-                        console.log("SE CAMBIó DE CUSTOMER Y NO PASÖ POR EL TIMER")
 
 
                     } else { // no existen otros customer que llamar
@@ -608,28 +626,27 @@ export class MainCallComponent implements OnInit, OnDestroy {
             if (response.result > 0) {
 
 
-                console.log("Se seteó el nuevo customer para llamar id:" + id);
                 this.indexCurrentPhone = 0;
                 //borramos la instancia anteior para suscribir una nueva
-                if (this.countDown)
-                    this.countDown.unsubscribe();
-
-
-                let autocall = localStorage.getItem("autocall_time") || "none";
-                if (autocall !== "none") {
-                    this.autocall_time = JSON.parse(autocall);
-                    this.counter = this.autocall_time.min_value;
-
-                }
-                else {
-                    this.counter = 15;
-                }
-
-
-
-                this.startTimerPrincipal();
-                //this.startTimerCheck();
-
+                /* if (this.countDown)
+                     this.countDown.unsubscribe();
+ 
+ 
+                 let autocall = localStorage.getItem("autocall_time") || "none";
+                 if (autocall !== "none") {
+                     this.autocall_time = JSON.parse(autocall);
+                     this.counter = this.autocall_time.min_value;
+ 
+                 }
+                 else {
+                     this.counter = 15;
+                 }
+ 
+ 
+ 
+                 this.startTimerPrincipal();
+                 //this.startTimerCheck();
+                 */
 
                 this.currentCustomer = this.customerModel.customer;
 
@@ -640,19 +657,6 @@ export class MainCallComponent implements OnInit, OnDestroy {
 
                         this.debts = response.data;
                         this.idsPayment = this.debts.map(d => d.idPay).filter(d => d);
-                        if (this.ready && !this.error) {
-                            if (typeof localStorage.getItem("currentCustomer") === 'undefined' ||
-                                localStorage.getItem("currentCustomer") !== this.currentCustomer.id.toString()) {
-                                console.log("se llamará otro customer")
-                                window.localStorage.setItem("currentCustomer", this.currentCustomer.id.toString());
-                                if (this.indexCurrentPhone !== null)
-                                    this.callPhoneByIndex(this.indexCurrentPhone);
-
-
-                            }
-                        }
-
-
                         this.mainCallData.updateCustomerInfo(this.currentCustomer);
                     }
                     else {
@@ -693,6 +697,7 @@ export class MainCallComponent implements OnInit, OnDestroy {
             console.error(err);
         });
     }
+    /*
     startTimerPrincipal() {
 
         this.countDown = timer(0, 1000).subscribe(() => {
@@ -712,4 +717,5 @@ export class MainCallComponent implements OnInit, OnDestroy {
             }
         });
     }
+    */
 }

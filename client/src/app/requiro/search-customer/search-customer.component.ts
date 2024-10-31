@@ -94,13 +94,13 @@ export class SearchCustomerComponent implements OnInit, AfterViewInit {
 
   toggleDropdown() {
     this.isOpen = !this.isOpen;
-    this.mainCallData.sendToggleFlagEvent(this.isOpen);
+    // this.mainCallData.sendToggleFlagEvent(this.isOpen);
 
   }
 
   onClickOutside() {
     this.isOpen = false;
-    this.mainCallData.sendToggleFlagEvent(this.isOpen);
+    // this.mainCallData.sendToggleFlagEvent(this.isOpen);
   }
 
   isSearchDisabled() {

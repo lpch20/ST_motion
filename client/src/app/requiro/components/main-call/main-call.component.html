@@ -11,7 +11,7 @@
 <div *ngIf="!timerActive" style="margin: 15px;"></div>
 
 <customer-player [customer]="currentCustomer" [index-current-phone]="indexCurrentPhone" [timerActive]="timerActive"
-    [contador]="counter" [playerStatus]="player" (detailEvent)="showDetail($event)" (callPhone)="initCall($event)"
+    [playerStatus]="player" (detailEvent)="showDetail($event)" (callPhone)="initCall($event)"
     *ngIf="currentCustomer && !ready && !error"></customer-player>
 
 <fury-scrollbar class="dashboard" furyPage furyPagePadding fxLayout="column" *ngIf="(ready  && !error) || _showDetails">
@@ -19,7 +19,7 @@
         <div class="content" fxLayout="column" fxLayoutGap="24px">
             <!--<div *ngIf="ready  && !error && currentCustomer"> -->
             <div style="text-align:right;font-size: xx-large;">
-                <label *ngIf="temporizadorActive">Tiempo restante: {{labelTemporizador}}</label>
+                <!--<label *ngIf="temporizadorActive">Tiempo restante: {{labelTemporizador}}</label>-->
             </div>
             <div *ngIf="currentCustomer">
                 <event-customer [customer-id]="currentCustomer.id" [idsPayment]="idsPayment" [timerActive]="timerActive"

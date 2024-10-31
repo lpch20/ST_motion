@@ -155,7 +155,7 @@ export class EventCustomerComponent implements OnInit, OnChanges {
       }
     );
 
-    //PARAMETRO DE MENSAJE PERSONALIZADO
+    /*/PARAMETRO DE MENSAJE PERSONALIZADO
     let cn = localStorage.getItem("message") || "none";
     if (cn !== "none") {
       this.message = JSON.parse(cn);
@@ -164,7 +164,7 @@ export class EventCustomerComponent implements OnInit, OnChanges {
     else {
       this.observation = 'Observación automática por timer finalizado';
     }
-
+ */
 
     this.eventAnnotationClass = "eventAnnotationGreen";
 
@@ -262,6 +262,7 @@ export class EventCustomerComponent implements OnInit, OnChanges {
   private initListeningEvents(): void {
 
     //SUSCripcion para el fin del timer
+    /*
     this.activateEventSubscription = this.mainCallData.activateEvent.subscribe(
       t => {
 
@@ -282,6 +283,7 @@ export class EventCustomerComponent implements OnInit, OnChanges {
         console.error(error);
       }
     );
+    */
 
 
   }
@@ -297,19 +299,19 @@ export class EventCustomerComponent implements OnInit, OnChanges {
       return result;
     }
   }
-
+  /*
   setValuesTimerOff(): Promise<any> {
     return Promise.resolve((() => {
       this.evt = this.eventTypes.filter(et => et.name.toLocaleUpperCase() === "LLAMADA FINALIZADA")[0];
       this.acts = this.actions.filter(et => et.name.toLocaleUpperCase() === "OTRO")[0];
       this.resultInteraction = this.evt.id;
       this.actionInteraction = this.acts.id;
-      this.newMessage = this.observation;
+      //this.newMessage = this.observation;
       this.eventChange()
       return true;
     })());
   }
-
+*/
   toogleHistory(): void {
     this.showEngagamentHistory = !this.showEngagamentHistory;
     this.showEventsHistory = false;

@@ -24,6 +24,7 @@ export class UsersComponent implements OnInit {
   rols: Map<number, { id: number, name: string }>;
   conn_time: ParameterType;
   filter_time: ParameterType;
+  extra_time: ParameterType;
   request_time: ParameterType;
   autocall_time: ParameterType;
   message: ParameterType;
@@ -68,11 +69,13 @@ export class UsersComponent implements OnInit {
 
                         this.conn_time = this.parameters.filter(x => x.name.toUpperCase() == "CONN_TIME")[0];
                         this.filter_time = this.parameters.filter(x => x.name.toUpperCase() == "FILTER_TIME")[0];
+                        this.extra_time = this.parameters.filter(x => x.name.toUpperCase() == "EXTRA_TIME")[0];
                         this.request_time = this.parameters.filter(x => x.name.toUpperCase() == "REQUEST_TIME")[0];
                         this.autocall_time = this.parameters.filter(x => x.name.toUpperCase() == "AUTOCALL_TIME")[0];
                         this.message = this.parameters.filter(x => x.name.toUpperCase() == "MESSAGE")[0];
                         localStorage.setItem('conn_time', JSON.stringify(this.conn_time));
                         localStorage.setItem('filter_time', JSON.stringify(this.filter_time));
+                        localStorage.setItem('extra_time', JSON.stringify(this.extra_time));
                         localStorage.setItem('request_time', JSON.stringify(this.request_time));
                         localStorage.setItem('autocall_time', JSON.stringify(this.autocall_time));
                         localStorage.setItem('message', JSON.stringify(this.message));
