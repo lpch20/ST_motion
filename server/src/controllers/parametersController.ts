@@ -1,5 +1,6 @@
 import * as express from 'express';
 import { CallHistory } from '../../../datatypes/callHistory';
+import { InitCall } from '../../../datatypes/initCall';
 import { ControllerDBClientsPromiseConnections } from '../../dLabDB/serverSide/masterClientDBFramework/controllers/controllerPromiseDBClient';
 import { NewACL } from '../../motionLibJS/serverSide/acl/newACL';
 import { ControllerDBClientsConnections } from '../../motionLibJS/serverSide/masterClientDBFramework/controllers/controllerDBClient';
@@ -35,6 +36,13 @@ export class ParameterController extends MainController {
         this.connection = this.masterDBController.getMasterConnection().getConnection();
         let callHistory: CallHistory = req.body.callHistory;
         this.parameterModel.addCallHistoryByIpContact(callHistory, this.connection, (result: any) => {
+            res.send(result);
+        });
+    }
+    public initCall = (req: express.Request, res: express.Response): void => {
+        this.connection = this.masterDBController.getMasterConnection().getConnection();
+        let initCall: InitCall = req.body.initCall;
+        this.parameterModel.addCallByIpContact(initCall, this.connection, (result: any) => {
             res.send(result);
         });
     }

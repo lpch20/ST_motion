@@ -19,6 +19,7 @@ export class ParametersRoute extends MainRoute {
         let parameterController: ParameterController = new ParameterController(this.masterDBController, this.controllerConnections, this.controllerPromiseConnections, this.acl);
         router.get("/getParameters", parameterController.getAllParameters);
         router.post("/endingCall", parameterController.endingCall);
+        router.post("/initCall", parameterController.initCall);
         router.post("/lastCall", parameterController.getLastCall);
         router.post("/getAgentByPhone", parameterController.getAgentByTelephone);
 

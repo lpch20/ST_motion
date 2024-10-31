@@ -1,4 +1,5 @@
 import { CallHistory } from '../../../datatypes/callHistory';
+import { InitCall } from '../../../datatypes/initCall';
 import { ResultCode, ResultWithData } from '../../../datatypes/result';
 import { ControllerDBClientsConnections } from '../../motionLibJS/serverSide/masterClientDBFramework/controllers/controllerDBClient';
 import { MainModel } from './mainModel';
@@ -73,7 +74,61 @@ export class ParameterModel extends MainModel {
             }
         });
     }
+    /**
+       * 
+       * @param start 
+        * @param customerId 
+       * @param source 
+       * @param Destination 
+      * @param con 
+       */
+    addCallByIpContact(InitCall: InitCall, con: any, callBack: (r: any) => void): void {
+        con.getConnection((err: any, con: any) => {
+            if (err) {
+                con.release();
+                this.errorModel(con, err, callBack);
+            } else {
 
+                if (InitCall.destination == null || InitCall.destination.length == 0) {
+                    callBack({
+                        result: ResultCode.Error,
+                        message: "FAIL",
+                        data: {
+                            mensaje: "callId no puede ser null"
+                        }
+                    });
+                }
+
+                if (InitCall.customerId == null || InitCall.customerId.length == 0) {
+                    callBack({
+                        result: ResultCode.Error,
+                        message: "FAIL",
+                        data: {
+                            mensaje: "customerId no puede ser null"
+                        }
+                    });
+                }
+
+
+
+                const QUERY = 'INSERT INTO call_init (start,customerId,source,Destination) VALUES (?,?,?,?)';
+                con.query(QUERY, [InitCall.start, InitCall.customerId, InitCall.source, InitCall.destination], (err: any, result: any) => {
+                    if (err) {
+                        this.errorModel(con, err, callBack);
+                    } else {
+                        con.release();
+                        callBack({
+                            result: ResultCode.OK,
+                            message: "OK",
+                            data: result
+                        });
+                    }
+                });
+
+
+            }
+        });
+    }
     /**
    * 
    * @param customerId
