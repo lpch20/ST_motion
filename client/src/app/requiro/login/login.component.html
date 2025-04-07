@@ -7,7 +7,7 @@
             <div fxFlex="grow" fxLayout="column" fxLayoutGap="8px">
                 <mat-form-field fxFlex="grow">
                     <mat-placeholder>Usuario</mat-placeholder>
-                    <input matInput [(ngModel)]="username" [formControl]="userCtrl" >
+                    <input matInput [(ngModel)]="username" [formControl]="userCtrl">
                 </mat-form-field>
                 <mat-form-field fxFlex="grow">
                     <mat-placeholder>Password</mat-placeholder>
@@ -28,7 +28,7 @@
                 </span>
                 <mat-form-field fxFlex="grow" *ngIf="newPassword">
                     <mat-placeholder>Nuevo Password</mat-placeholder>
-                    <input matInput [(ngModel)]="newPass" [type]="inputType" [formControl] = "newPassCtrl">
+                    <input matInput [(ngModel)]="newPass" [type]="inputType" [formControl]="newPassCtrl">
                     <button *ngIf="!visible" type="button" mat-icon-button matSuffix (click)="show()">
                         <mat-icon>visibility</mat-icon>
                     </button>
@@ -38,7 +38,7 @@
                 </mat-form-field>
                 <mat-form-field fxFlex="grow" *ngIf="newPassword">
                     <mat-placeholder>Repetir Nuevo Password</mat-placeholder>
-                    <input matInput [(ngModel)]="newPass2" [type]="inputType" [formControl] = "newPass2Ctrl">
+                    <input matInput [(ngModel)]="newPass2" [type]="inputType" [formControl]="newPass2Ctrl">
                     <button *ngIf="!visible" type="button" mat-icon-button matSuffix (click)="show()">
                         <mat-icon>visibility</mat-icon>
                     </button>
@@ -48,12 +48,14 @@
                 </mat-form-field>
             </div>
 
-            <button type="button" color="primary" [disabled]="userCtrl.status === 'INVALID' || passCtrl.status === 'INVALID'"
-                mat-raised-button *ngIf="!newPassword" (click)="login()">
+            <button type="button" color="primary"
+                [disabled]="userCtrl.status === 'INVALID' || passCtrl.status === 'INVALID'" mat-raised-button
+                *ngIf="!newPassword" (click)="login()">
                 Iniciar sesión
             </button>
-            <button type="button" color="primary" 
-            [disabled]="userCtrl.status === 'INVALID' || passCtrl.status === 'INVALID' || newPassCtrl.status === 'INVALID' || newPass2Ctrl.status === 'INVALID'"
+
+            <button type="button" color="primary"
+                [disabled]="userCtrl.status === 'INVALID' || passCtrl.status === 'INVALID' || newPassCtrl.status === 'INVALID' || newPass2Ctrl.status === 'INVALID'"
                 mat-raised-button *ngIf="newPassword" (click)="changePasswordAndLogin()">
                 Iniciar sesión / Cambiar contraseña
             </button>

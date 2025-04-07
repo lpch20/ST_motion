@@ -1,6 +1,7 @@
 import * as express from 'express';
 import { Account } from '../../../datatypes/account';
 import { CallStatusType } from '../../../datatypes/call';
+import { InitCall } from '../../../datatypes/initCall';
 import { ResultCode } from '../../../datatypes/result';
 import { ControllerDBClientsPromiseConnections } from '../../dLabDB/serverSide/masterClientDBFramework/controllers/controllerPromiseDBClient';
 import { NewACL } from '../../motionLibJS/serverSide/acl/newACL';
@@ -8,6 +9,7 @@ import { ControllerDBClientsConnections } from '../../motionLibJS/serverSide/mas
 import { ControllerDBMaster } from '../../motionLibJS/serverSide/masterClientDBFramework/controllers/controllerDBMaster';
 import { AccountModel } from '../models/AccountsModel';
 import { CallModel } from '../models/callModel';
+import { ParameterModel } from '../models/parameters';
 import { UserModel } from '../models/userModel';
 import { MainController } from './mainController';
 const request = require('request');
@@ -17,6 +19,8 @@ export class CallController extends MainController {
     private callModel: CallModel
     private userModel: UserModel
     private accountModel: AccountModel;
+    private parameterModel: ParameterModel;
+    private connection: any;
 
     constructor(masterDBController: ControllerDBMaster,
         controllerConnections: ControllerDBClientsConnections,
@@ -27,6 +31,7 @@ export class CallController extends MainController {
         this.callModel = new CallModel(controllerConnections);
         this.userModel = new UserModel(controllerConnections);
         this.accountModel = new AccountModel(masterDBController);
+        this.parameterModel = new ParameterModel(controllerConnections);
     }
 
     public makeCall = (req: express.Request, res: express.Response): void => {
@@ -84,6 +89,7 @@ export class CallController extends MainController {
             localAddress: LOCAL_ADDRESS
         }
 
+
         this.getConnection(dbName, res, con => {
             this.userModel.getUserByUsername(<string>req.headers['user'], con, (userResult: any) => {
                 let idCustomer: number = req.body.idCustomer;
@@ -97,8 +103,11 @@ export class CallController extends MainController {
                         message: "Llamada desabilitada"
                     });
                 } else {
+
                     this.callModel.getLastCall(idUser, source, con, (callResult) => {
+                        this.connection = this.masterDBController.getMasterConnection().getConnection();
                         if (callResult.result == ResultCode.OK) {
+
                             if (callResult.data) { // si existe una llamada desde esa extension a ese destino
                                 const diffTime = this.calculateSecondsDiff(new Date(), callResult.data.date);
                                 const DUPLICATED_DELAY = 3;
@@ -106,10 +115,26 @@ export class CallController extends MainController {
                                     (callResult.data.type === CallStatusType.Calling && diffTime > DUPLICATED_DELAY) ||
                                     (callResult.data.type === CallStatusType.DuplicatedCall && diffTime > DUPLICATED_DELAY)
                                 ) {
+
+                                    let init: InitCall = new InitCall();
+                                    init.customerId = idCustomer.toString();
+                                    init.destination = dest;
+                                    init.source = source;
+                                    this.parameterModel.addCallByIpContact(init, this.connection, (result: any) => {
+                                        console.log(result);
+                                    });
+
+                                    this.parameterModel.updateLastCallByCustomer(idCustomer.toString(), this.connection, (result: any) => {
+                                        console.log(result);
+                                    });
+
+
                                     this.callModel.add(idUser, idCustomer, source, dest, url, CallStatusType.Calling, "", dbName, (result: any) => {
                                         this.call(options, idUser, idCustomer, source, dest, url, dbName, res);
                                     });
                                 } else {
+
+
                                     this.callModel.add(idUser, idCustomer, source, dest, url, CallStatusType.DuplicatedCall, "", dbName, (result: any) => {
                                         // TODO hacer una clase con los errores posibles
                                         res.send({
@@ -119,11 +144,25 @@ export class CallController extends MainController {
                                     });
                                 }
                             } else {
+
+                                let init: InitCall = new InitCall();
+                                init.customerId = idCustomer.toString();
+                                init.destination = dest;
+                                init.source = source;
+                                this.parameterModel.addCallByIpContact(init, this.connection, (result: any) => {
+                                    console.log(result);
+                                });
+
+                                this.parameterModel.updateLastCallByCustomer(idCustomer.toString(), this.connection, (result: any) => {
+                                    console.log(result);
+                                });
                                 this.callModel.add(idUser, idCustomer, source, dest, url, CallStatusType.Calling, "", dbName, (result: any) => {
                                     this.call(options, idUser, idCustomer, source, dest, url, dbName, res);
                                 });
                             }
                         } else {
+
+
                             res.send({
                                 result: ResultCode.Error,
                                 message: 'Error al iniciar la llamada'

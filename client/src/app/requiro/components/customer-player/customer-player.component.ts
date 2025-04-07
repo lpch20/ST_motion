@@ -18,7 +18,8 @@ export class CustomerPlayerComponent implements OnInit, OnChanges {
   indexPhone: number = 0;
   @Input() playerStatus: boolean;
   @Input() timerActive: boolean;
-  //@Input() contador: number;
+  @Input() contador: number;
+  @Input() rolId: string;
   @Output() detailEvent = new EventEmitter<boolean>();
   @Output() callPhone = new EventEmitter<boolean>();
   public _showDetail: boolean = false;
@@ -26,9 +27,12 @@ export class CustomerPlayerComponent implements OnInit, OnChanges {
 
   constructor(private mainCallService: MainCallDataServiceService,
     private campaignService: CampaignService,
+    private mainCallData: MainCallDataServiceService,
     private customerService: CustomersService) { }
 
   showDetail(): void {
+
+    console.log("el rol id es : " + this.rolId)
     this._showDetail = !this._showDetail;
     this.detailEvent.emit(this._showDetail);
   }
@@ -75,6 +79,7 @@ export class CustomerPlayerComponent implements OnInit, OnChanges {
   }
 
   nextCustomer(): void {
+    this.mainCallData.sendToggleAddObervacionEvent(true);
     this.customerService.updateItemQueueStatus(this.customer.id, "skipped").subscribe(
       response => {
         this.mainCallService.sendNewCustomerEvent(true, Redirect.OtherCustomer);

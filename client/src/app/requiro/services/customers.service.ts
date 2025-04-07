@@ -67,7 +67,7 @@ export class CustomersService {
         return this.http.post<ResultWithData<CustomerCampaign[]>>(this.customerURL + '/customersCampaign', idCustomers);
     }
 
-    public addCustomerEvent(customerEvent: { idCampaign: number, event: ClientEvent }): Observable<ResultWithData<Customer>> {
+    public addCustomerEvent(customerEvent: { idCampaign: number, event: ClientEvent, flag: boolean }): Observable<ResultWithData<Customer>> {
         return this.http.post<ResultWithData<Customer>>(this.customerURL + '/addEvent', { customerEvent });
     }
 

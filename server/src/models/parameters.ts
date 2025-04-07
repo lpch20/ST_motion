@@ -1,3 +1,4 @@
+import { AwaitedCall } from '../../../datatypes/awaitedCall';
 import { CallHistory } from '../../../datatypes/callHistory';
 import { InitCall } from '../../../datatypes/initCall';
 import { ResultCode, ResultWithData } from '../../../datatypes/result';
@@ -9,18 +10,24 @@ export class ParameterModel extends MainModel {
         super();
     }
 
-    getAll(dbName: string, callBack: (r: ResultWithData<any[]>) => void): void {
+    getAll(con: any, callBack: (r: ResultWithData<any[]>) => void): void {
 
-        const pool = this.controllerConnections.getUserConnection(dbName);
-        const QUERY: string = 'SELECT * FROM parameters';
-        pool.query(QUERY, (err: any, result: any[]) => {
-            if (!!err) {
-                this.errorModel(pool, err, callBack);
+        con.getConnection((err: any, con: any) => {
+            if (err) {
+                con.release();
+                this.errorModel(con, err, callBack);
             } else {
-                callBack({
-                    result: ResultCode.OK,
-                    message: 'OK',
-                    data: result
+                const QUERY: string = 'SELECT * FROM parameters';
+                con.query(QUERY, (err: any, result: any[]) => {
+                    if (!!err) {
+                        this.errorModel(con, err, callBack);
+                    } else {
+                        callBack({
+                            result: ResultCode.OK,
+                            message: 'OK',
+                            data: result
+                        });
+                    }
                 });
             }
         });
@@ -111,8 +118,63 @@ export class ParameterModel extends MainModel {
 
 
 
-                const QUERY = 'INSERT INTO call_init (start,customerId,source,Destination) VALUES (?,?,?,?)';
-                con.query(QUERY, [InitCall.start, InitCall.customerId, InitCall.source, InitCall.destination], (err: any, result: any) => {
+                const QUERY = 'INSERT INTO call_init (start,customerId,source,destination) VALUES (?,?,?,?)';
+                con.query(QUERY, [new Date(), InitCall.customerId, InitCall.source, InitCall.destination], (err: any, result: any) => {
+                    if (err) {
+                        this.errorModel(con, err, callBack);
+                    } else {
+                        con.release();
+                        callBack({
+                            result: ResultCode.OK,
+                            message: "OK",
+                            data: result
+                        });
+                    }
+                });
+
+
+            }
+        });
+    }
+    /**
+       * 
+       * @param date_processed 
+        * @param customerId 
+       * @param source 
+       * @param Destination 
+      * @param con 
+       */
+    addCallAwaited(AwaitedCall: AwaitedCall, con: any, callBack: (r: any) => void): void {
+        con.getConnection((err: any, con: any) => {
+            if (err) {
+                con.release();
+                this.errorModel(con, err, callBack);
+            } else {
+
+                if (AwaitedCall.destination == null || AwaitedCall.destination.length == 0) {
+                    callBack({
+                        result: ResultCode.Error,
+                        message: "FAIL",
+                        data: {
+                            mensaje: "callId no puede ser null"
+                        }
+                    });
+                }
+
+                if (AwaitedCall.customerId == null || AwaitedCall.customerId.length == 0) {
+                    callBack({
+                        result: ResultCode.Error,
+                        message: "FAIL",
+                        data: {
+                            mensaje: "customerId no puede ser null"
+                        }
+                    });
+                }
+
+
+
+                const QUERY = 'INSERT INTO calls_awaited (date_processed,customerId,source,destination) VALUES (?,?,?,?)';
+                con.query(QUERY, [new Date(), AwaitedCall.customerId, AwaitedCall.source, AwaitedCall.destination], (err: any, result: any) => {
                     if (err) {
                         this.errorModel(con, err, callBack);
                     } else {
@@ -135,7 +197,7 @@ export class ParameterModel extends MainModel {
    * @param destination
    * @param con 
    */
-    getLastCallByCustomer(customerId: string, phone: string, totalTime: number, con: any, callBack: (r: any) => void): void {
+    getLastCallByCustomer(customerId: string, totalTime: number, con: any, callBack: (r: any) => void): void {
         con.getConnection((err: any, con: any) => {
             if (err) {
                 con.release();
@@ -151,22 +213,13 @@ export class ParameterModel extends MainModel {
                         }
                     });
                 }
-                if (phone == null || phone.length == 0) {
-                    callBack({
-                        result: ResultCode.Error,
-                        message: "FAIL",
-                        data: {
-                            mensaje: "phone no puede ser null"
-                        }
-                    });
-                }
+
                 else {
 
-                    const QUERY_FIND = 'SELECT * FROM master_stmotion.call_history_st ch where ch.status=0 and customerId = ?  and destination = ? and ch.end between NOW() - INTERVAL 40 minute and NOW() + INTERVAL 40 minute and totalTime > ? order by id desc limit 1';
+                    const QUERY_FIND = 'SELECT * FROM master_stmotion.call_history_st ch where ch.status=0 and ch.flag=0 and customerId = ? and ch.end between NOW() - INTERVAL 40 minute and NOW() + INTERVAL 40 minute and totalTime > ? order by id desc limit 1';
 
 
-
-                    con.query(QUERY_FIND, [customerId, phone, totalTime], (err: any, result: any) => {
+                    con.query(QUERY_FIND, [customerId, totalTime], (err: any, result: any) => {
                         if (err) {
                             this.errorModel(con, err, callBack);
                         } else {
@@ -196,6 +249,56 @@ export class ParameterModel extends MainModel {
 
 
 
+
+                        }
+                    });
+
+                }
+
+            }
+        });
+    }
+
+    /**
+      * 
+      * @param customerId
+      * @param destination
+      * @param con 
+      */
+    updateLastCallByCustomer(customerId: string, con: any, callBack: (r: any) => void): void {
+        con.getConnection((err: any, con: any) => {
+            if (err) {
+                con.release();
+                this.errorModel(con, err, callBack);
+            } else {
+
+                if (customerId == null || customerId.length == 0) {
+                    callBack({
+                        result: ResultCode.Error,
+                        message: "FAIL",
+                        data: {
+                            mensaje: "customerId no puede ser null"
+                        }
+                    });
+                }
+
+                else {
+
+                    const QUERY_FIND = 'Update master_stmotion.call_history_st ch set ch.flag=1 where customerId = ? ';
+
+
+
+                    con.query(QUERY_FIND, [customerId], (err: any, result: any) => {
+                        if (err) {
+                            this.errorModel(con, err, callBack);
+                        } else {
+
+                            con.release();
+                            callBack({
+                                result: ResultCode.OK,
+                                message: "OK",
+                                data: result
+                            });
 
                         }
                     });

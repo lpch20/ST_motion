@@ -3,12 +3,14 @@
   <mat-card-header *ngIf="!_showDetail">
     <span fxFlex></span>
     <!--<span>Llamando en {{time}}s</span> -->
-<!--    
+  <!--    
   </mat-card-header>
+  
 -->
   <mat-card-content>
     <div style="font-size: 50px;text-align: center" *ngIf="customer && !_showDetail">
-      <span *ngIf="campaigns && getCampaignById(customer.idCampaign)">{{ getCampaignById(customer.idCampaign).name }}</span>
+      <span *ngIf="campaigns && getCampaignById(customer.idCampaign)">{{ getCampaignById(customer.idCampaign).name
+        }}</span>
       <table style="font-size: 30px;margin: auto;">
         <tr>
           <td>
@@ -19,7 +21,7 @@
         <tr *ngIf="customer.phones[indexPhone]">
           <td>
             <i class="material-icons orange600">phone</i>
-          </td>          
+          </td>
           <td>
             <input type="text" [(ngModel)]="customer.phones[indexPhone]" disabled />
           </td>
@@ -36,14 +38,16 @@
         <i class="material-icons">call</i>
         <span>Llamar</span>
       </button>
-    
+
       <button mat-button (click)="toogle()" *ngIf="timerActive">
-        <mat-icon _ngcontent-c29="" class="mat-icon material-icons" role="img" aria-hidden="true" *ngIf="playerStatus">stop</mat-icon>
+        <mat-icon _ngcontent-c29="" class="mat-icon material-icons" role="img" aria-hidden="true"
+          *ngIf="playerStatus">stop</mat-icon>
         <span *ngIf="playerStatus">Pausar Player</span>
-        <mat-icon _ngcontent-c29="" class="mat-icon material-icons" role="img" aria-hidden="true" *ngIf="!playerStatus">play_arrow</mat-icon>
+        <mat-icon _ngcontent-c29="" class="mat-icon material-icons" role="img" aria-hidden="true"
+          *ngIf="!playerStatus">play_arrow</mat-icon>
         <span *ngIf="!playerStatus">Iniciar Player</span>
       </button>
-    
+
       <!--<call-player class="botton"></call-player>-->
       <button mat-button (click)="nextCustomer()">
         <i class="material-icons">skip_next</i>
@@ -54,6 +58,11 @@
         <i class="material-icons">contacts</i>
         <span>Detalles</span>
       </button>
+      <span fxFlex></span>
+    </div>
+    <div fxLayout="row">
+      <span fxFlex></span>
+      <label *ngIf="customer && rolId!='1'">Próxima llamada en: {{contador}}</label>
       <span fxFlex></span>
     </div>
   </mat-card-content>

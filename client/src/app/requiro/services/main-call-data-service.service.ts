@@ -9,9 +9,13 @@ export class MainCallDataServiceService {
   private customerEvent = new BehaviorSubject<{ ok: boolean, nextCall: string }>({ ok: false, nextCall: "" });
   private _endTimerEvent = new BehaviorSubject<boolean>(false);
   private _activateEvent = new BehaviorSubject<boolean>(false);
+  private _activateEventCorto = new BehaviorSubject<boolean>(false);
+  private _optionEvent = new BehaviorSubject<boolean>(false);
   private _customerIdEvent = new BehaviorSubject<number>(0);
   private _toggleFlagEvent = new BehaviorSubject<boolean>(false);
-  private _toggleCallEvent = new BehaviorSubject<string>('');
+  private _toggleCallEvent = new BehaviorSubject<boolean>(false);
+  private _toggleAddObervacionEvent = new BehaviorSubject<boolean>(false);
+  private _toggleCallEventCorto = new BehaviorSubject<boolean>(false);
   private _customerChange = new BehaviorSubject<Customer>(null);
   private _customerDataChange = new BehaviorSubject<Customer>(null);
   private _logout = new BehaviorSubject<boolean>(false);
@@ -34,12 +38,16 @@ export class MainCallDataServiceService {
   newCustomerEvent = this.customerEvent.asObservable();
   endTimerEvent = this._endTimerEvent.asObservable();
   activateEvent = this._activateEvent.asObservable();
+  activateEventCorto = this._activateEventCorto.asObservable();
+  optionEvent = this._optionEvent.asObservable();
   /**
    * Atributo utilizado para escuchar cambio de customer
    */
   customerIdEvent = this._customerIdEvent.asObservable();
   toggleFlagEvent = this._toggleFlagEvent.asObservable();
   toggleCallEvent = this._toggleCallEvent.asObservable();
+  toggleAddObervacionEvent = this._toggleAddObervacionEvent.asObservable();
+  toggleCallEventCorto = this._toggleCallEventCorto.asObservable();
   logoutEvent = this._logout.asObservable();
   playerEvent = this._player.asObservable();
   breakEvent = this._break.asObservable();
@@ -52,6 +60,12 @@ export class MainCallDataServiceService {
   }
   sendActivateEvent(end: boolean): void {
     this._activateEvent.next(end);
+  }
+  sendActivateEventCorto(end: boolean): void {
+    this._activateEventCorto.next(end);
+  }
+  sendOptionEvent(end: boolean): void {
+    this._optionEvent.next(end);
   }
 
   /**
@@ -73,8 +87,22 @@ export class MainCallDataServiceService {
     * Evento que se envia cuado cambia se hace una llamada.
     * @param flag {boolean} valor de seleccion
     */
-  sendToggleCallEvent(tel: string): void {
-    this._toggleCallEvent.next(tel);
+  sendToggleCallEvent(end: boolean): void {
+    this._toggleCallEvent.next(end);
+  }
+  /**
+   * Evento que se envia cuado cambia se hace una llamada.
+   * @param flag {boolean} valor de seleccion
+   */
+  sendToggleCallEventCorto(end: boolean): void {
+    this._toggleCallEventCorto.next(end);
+  }
+  /**
+     * Evento que se envia cuado se envia una observación.
+     * @param flag {boolean} valor de seleccion
+     */
+  sendToggleAddObervacionEvent(end: boolean): void {
+    this._toggleAddObervacionEvent.next(end);
   }
 
   sendLogoutEvent(): void {

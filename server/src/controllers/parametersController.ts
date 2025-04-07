@@ -24,13 +24,11 @@ export class ParameterController extends MainController {
     }
 
     public getAllParameters = (req: express.Request, res: express.Response): void => {
-        this.verifyAccess(req, res, this.resource, (dbName: string) => {
-            // let con= this.masterDBController.getMasterConnection().getConnection();
-
-            this.parameterModel.getAll(dbName, (result: any) => {
-                res.send(result);
-            });
+        this.connection = this.masterDBController.getMasterConnection().getConnection();
+        this.parameterModel.getAll(this.connection, (result: any) => {
+            res.send(result);
         });
+
     };
     public endingCall = (req: express.Request, res: express.Response): void => {
         this.connection = this.masterDBController.getMasterConnection().getConnection();
@@ -51,7 +49,15 @@ export class ParameterController extends MainController {
         let customerId: string = req.body.customerId;
         let phone: string = req.body.phone;
         let totalTime: number = req.body.time;
-        this.parameterModel.getLastCallByCustomer(customerId, phone, totalTime, this.connection, (result: any) => {
+        this.parameterModel.getLastCallByCustomer(customerId, totalTime, this.connection, (result: any) => {
+            res.send(result);
+        });
+    }
+    public updateLastCall = (req: express.Request, res: express.Response): void => {
+        this.connection = this.masterDBController.getMasterConnection().getConnection();
+        let customerId: string = req.body.customerId;
+        let phone: string = req.body.phone;
+        this.parameterModel.updateLastCallByCustomer(customerId, this.connection, (result: any) => {
             res.send(result);
         });
     }

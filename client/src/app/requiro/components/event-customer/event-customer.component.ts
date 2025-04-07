@@ -33,6 +33,8 @@ export class EventCustomerComponent implements OnInit, OnChanges {
 
   @Input() timerActive: boolean;
   @Input() idsPayment: number[];
+  @Input() call_flag: boolean;
+
   indexPhone: number = 0;
   currentCustomer: Customer;
   currentPhone: string;
@@ -45,6 +47,8 @@ export class EventCustomerComponent implements OnInit, OnChanges {
   private subscription: Subscription;
   private subscriptionProgressive: Subscription;
   private activateEventSubscription: Subscription;
+  private activateEventCortoSubscription: Subscription;
+  private optionEventSubscription: Subscription;
   private timer: Observable<any>;
   private eventTypeMap: Map<number, EventType>;
   newEngagement: Engagement;
@@ -71,7 +75,7 @@ export class EventCustomerComponent implements OnInit, OnChanges {
   actionInteraction: number = null;
   idPayment: string = null;
   newMessage: string = '';
-
+  opcionBloqueada: boolean = false
   _customerId: number = 0;
   customerModel: CustomerModel;
   message: ParameterType;
@@ -118,6 +122,8 @@ export class EventCustomerComponent implements OnInit, OnChanges {
   private cleanSubscriptions(): void {
 
     this.activateEventSubscription.unsubscribe();
+    this.activateEventCortoSubscription.unsubscribe();
+    this.optionEventSubscription.unsubscribe();
   }
   ngOnDestroy() {
     this.cleanSubscriptions();
@@ -129,6 +135,8 @@ export class EventCustomerComponent implements OnInit, OnChanges {
   changeEventType(): void {
     if (this.resultInteraction && this.timerActive) {
       this.initTimer();
+
+
     }
   }
 
@@ -136,6 +144,8 @@ export class EventCustomerComponent implements OnInit, OnChanges {
     this.resultCtrl = new FormControl('', { validators: Validators.required });
     this.messageCtrl = new FormControl('', { validators: Validators.required });
     this.actionCtrl = new FormControl('', { validators: Validators.required });
+
+    this.opcionBloqueada = false;
 
     this.eventTypeMap = new Map<number, EventType>();
     this.timer = Observable.timer(0, 1000);
@@ -155,8 +165,8 @@ export class EventCustomerComponent implements OnInit, OnChanges {
       }
     );
 
-    /*/PARAMETRO DE MENSAJE PERSONALIZADO
-    let cn = localStorage.getItem("message") || "none";
+    //PARAMETRO DE MENSAJE PERSONALIZADO
+    let cn = window.localStorage.getItem("message") || "none";
     if (cn !== "none") {
       this.message = JSON.parse(cn);
       this.observation = this.message.description;
@@ -164,7 +174,7 @@ export class EventCustomerComponent implements OnInit, OnChanges {
     else {
       this.observation = 'Observación automática por timer finalizado';
     }
- */
+
 
     this.eventAnnotationClass = "eventAnnotationGreen";
 
@@ -262,14 +272,17 @@ export class EventCustomerComponent implements OnInit, OnChanges {
   private initListeningEvents(): void {
 
     //SUSCripcion para el fin del timer
-    /*
+
     this.activateEventSubscription = this.mainCallData.activateEvent.subscribe(
       t => {
 
-        console.log('activateEvent', t);
+        console.log('se activó el evento del timer largo', t);
         if (t) {
-          // TODO arreglar solucion provisoria
+
           setTimeout(() => {
+
+            //console.log(" SE PONDRÁ TODO POR DEFECTO")
+            //console.log("La llamada tuvo resultado por teledata asi: " + this.call_flag)
             this.setValuesTimerOff().then(res => {
               setTimeout(() => {
                 this.saveAnnotation();
@@ -283,8 +296,62 @@ export class EventCustomerComponent implements OnInit, OnChanges {
         console.error(error);
       }
     );
-    */
 
+    //Suscripcion para fin del timer corto
+    this.activateEventCortoSubscription = this.mainCallData.activateEventCorto.subscribe(
+      t => {
+
+        console.log('se activó el evento del timer Corto', t);
+        if (t) {
+          // TODO arreglar solucion provisoria
+          setTimeout(() => {
+
+
+            this.setValuesCortoOff().then(res => {
+              setTimeout(() => {
+                this.saveAnnotation();
+              }, 5000);
+            });
+
+          });
+        }
+      },
+      error => {
+        console.error(error);
+      }
+    );
+
+    this.optionEventSubscription = this.mainCallData.optionEvent.subscribe(
+      t => {
+
+        console.log('se activó el evento del timer option', t);
+        if (t) {
+          // TODO arreglar solucion provisoria
+          setTimeout(() => {
+            this.setOptionOff().then(res => {
+              //console.log("se colocó la opción por defecto")
+              this.opcionBloqueada = true;
+              this.resultCtrl.disable()
+              if (this.showMessage()) {
+
+                //console.log("MUESTRE EL TIMER")
+                this.mainCallData.sendToggleCallEvent(true);
+                this.mainCallData.sendToggleCallEvent(false);
+              }
+              else {
+                //console.log("MUESTRE EL TIMER CORTO")
+                this.mainCallData.sendToggleCallEventCorto(true);
+                this.mainCallData.sendToggleCallEventCorto(false);
+              }
+            });
+
+          });
+        }
+      },
+      error => {
+        console.error(error);
+      }
+    );
 
   }
 
@@ -299,19 +366,49 @@ export class EventCustomerComponent implements OnInit, OnChanges {
       return result;
     }
   }
-  /*
+  setOptionOff(): Promise<any> {
+    return Promise.resolve((() => {
+
+      if (this.resultInteraction == null) {
+
+        this.evt = this.eventTypes.filter(et => et.name.toLocaleUpperCase() === "LLAMADA FINALIZADA")[0];
+        this.acts = this.actions.filter(et => et.name.toLocaleUpperCase() === "OTRO")[0];
+        this.resultInteraction = this.evt.id;
+        this.actionInteraction = this.acts.id;
+        this.eventChange();
+
+      }
+      return true;
+    })());
+  }
+
+
   setValuesTimerOff(): Promise<any> {
     return Promise.resolve((() => {
       this.evt = this.eventTypes.filter(et => et.name.toLocaleUpperCase() === "LLAMADA FINALIZADA")[0];
       this.acts = this.actions.filter(et => et.name.toLocaleUpperCase() === "OTRO")[0];
       this.resultInteraction = this.evt.id;
       this.actionInteraction = this.acts.id;
-      //this.newMessage = this.observation;
+      this.newMessage = this.observation;
       this.eventChange()
       return true;
     })());
   }
-*/
+
+  setValuesCortoOff(): Promise<any> {
+    return Promise.resolve((() => {
+
+
+      if (this.actionInteraction == null) {
+        this.acts = this.actions.filter(et => et.name.toLocaleUpperCase() === "OTRO")[0];
+      }
+      if (this.newMessage == "")
+        this.newMessage = this.observation;
+      this.actionInteraction = this.acts.id;
+      this.eventChange()
+      return true;
+    })());
+  }
   toogleHistory(): void {
     this.showEngagamentHistory = !this.showEngagamentHistory;
     this.showEventsHistory = false;
@@ -327,6 +424,10 @@ export class EventCustomerComponent implements OnInit, OnChanges {
   }
 
   saveAnnotation(): void {
+    console.log("La llamada tuvo resultado por teledata asi: " + this.call_flag)
+    this.opcionBloqueada = false;
+    this.resultCtrl.enable()
+
     if (this.checkValidForm()) {
 
 
@@ -354,7 +455,8 @@ export class EventCustomerComponent implements OnInit, OnChanges {
       const currentEvent = {
         eventRedirection: event.redirect,
         idCampaign: this.currentCustomer.idCampaign,
-        event: new ClientEvent(auxEvent)
+        event: new ClientEvent(auxEvent),
+        flag: this.call_flag
       };
 
 
@@ -363,6 +465,11 @@ export class EventCustomerComponent implements OnInit, OnChanges {
         response => {
           console.log(response);
           if (response.result == ResultCode.OK) {
+            this.newMessage = ""
+            //SE ENVIA UN FLAG PARA DETENER LOS TIMER
+            this.mainCallData.sendToggleAddObervacionEvent(true);
+            this.mainCallData.sendToggleAddObervacionEvent(false);
+
             // 
             // OJO !!!
             // numero magico hardcodeado

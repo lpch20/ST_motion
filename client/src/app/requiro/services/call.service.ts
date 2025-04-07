@@ -16,7 +16,7 @@ export class CallService {
 
   makeCallFromAgent(idCustomer: number, phone: string, ci: string, port: string): Observable<ResultWithData<any>> {
     let agent = this.tokenService.getAgentToken();
-    let user = localStorage.getItem('user') || "none"
+    let user = window.localStorage.getItem('user') || "none"
     if (agent == null)
       agent = user;
     return this.http.post<ResultWithData<any[]>>(this.callURL + "/makeCall", { idCustomer, source: agent, dest: phone, agent: agent, identification: ci, portfolio: port });

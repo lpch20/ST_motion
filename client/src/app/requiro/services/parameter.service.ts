@@ -19,8 +19,11 @@ export class ParameterService {
     return this.http.get<ResultWithData<ParameterType[]>>(this.parameterURL + '/getParameters');
   }
 
-  public getLastCall(customerId: string, phone: string, time: number): Observable<ResultWithData<CallHistory[]>> {
-    return this.http.post<ResultWithData<CallHistory[]>>(this.parameterURL + '/lastCall', { customerId, phone, time });
+  public getLastCall(customerId: string, time: number): Observable<ResultWithData<CallHistory[]>> {
+    return this.http.post<ResultWithData<CallHistory[]>>(this.parameterURL + '/lastCall', { customerId, time });
+  }
+  public updateLastCall(customerId: string): Observable<ResultWithData<CallHistory[]>> {
+    return this.http.post<ResultWithData<CallHistory[]>>(this.parameterURL + '/updateLastCall', { customerId });
   }
 
 

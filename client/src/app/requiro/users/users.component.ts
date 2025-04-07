@@ -3,11 +3,9 @@ import { MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
 import { Break } from '../../../../../datatypes/Break';
 
-import { ParameterType } from '../../../../../datatypes/ParameterType';
 import { User } from '../../../../../datatypes/user';
 
 import { BreakService } from '../services/break.service';
-import { ParameterService } from '../services/parameter.service';
 import { TokenService } from '../services/token.service';
 import { UsersService } from '../services/users.service';
 
@@ -22,20 +20,12 @@ export class UsersComponent implements OnInit {
 
   users: User[];
   rols: Map<number, { id: number, name: string }>;
-  conn_time: ParameterType;
-  filter_time: ParameterType;
-  extra_time: ParameterType;
-  request_time: ParameterType;
-  autocall_time: ParameterType;
-  message: ParameterType;
-  parameters: ParameterType[];
+
   constructor(
     private userService: UsersService,
     private tokenService: TokenService,
     private dialog: MatDialog,
     private breakService: BreakService,
-    private parameterService: ParameterService,
-
     private router: Router
   ) { };
 
@@ -61,33 +51,7 @@ export class UsersComponent implements OnInit {
                   for (let i = 0; i < resultRols.length; i++) {
                     this.rols.set(resultRols[i].id, resultRols[i]);
                   }
-                  this.parameterService.getParameters().subscribe(
-                    response => {
 
-                      if (response.result > 0 && response.data && response.data.length > 0) {
-                        this.parameters = response.data;
-
-                        this.conn_time = this.parameters.filter(x => x.name.toUpperCase() == "CONN_TIME")[0];
-                        this.filter_time = this.parameters.filter(x => x.name.toUpperCase() == "FILTER_TIME")[0];
-                        this.extra_time = this.parameters.filter(x => x.name.toUpperCase() == "EXTRA_TIME")[0];
-                        this.request_time = this.parameters.filter(x => x.name.toUpperCase() == "REQUEST_TIME")[0];
-                        this.autocall_time = this.parameters.filter(x => x.name.toUpperCase() == "AUTOCALL_TIME")[0];
-                        this.message = this.parameters.filter(x => x.name.toUpperCase() == "MESSAGE")[0];
-                        localStorage.setItem('conn_time', JSON.stringify(this.conn_time));
-                        localStorage.setItem('filter_time', JSON.stringify(this.filter_time));
-                        localStorage.setItem('extra_time', JSON.stringify(this.extra_time));
-                        localStorage.setItem('request_time', JSON.stringify(this.request_time));
-                        localStorage.setItem('autocall_time', JSON.stringify(this.autocall_time));
-                        localStorage.setItem('message', JSON.stringify(this.message));
-                        localStorage.removeItem("currentCustomer")
-                        localStorage.removeItem('lastCall')
-                        localStorage.removeItem('time')
-                      }
-                    },
-                    error => {
-                      console.error(error);
-                    }
-                  );
 
                   this.userService.getUsers().subscribe(
                     response => {

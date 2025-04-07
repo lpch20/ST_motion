@@ -11,19 +11,21 @@
 <div *ngIf="!timerActive" style="margin: 15px;"></div>
 
 <customer-player [customer]="currentCustomer" [index-current-phone]="indexCurrentPhone" [timerActive]="timerActive"
-    [playerStatus]="player" (detailEvent)="showDetail($event)" (callPhone)="initCall($event)"
-    *ngIf="currentCustomer && !ready && !error"></customer-player>
+    [playerStatus]="player" (detailEvent)="showDetail($event)" (callPhone)="initCall($event)" [contador]="counter"
+    [rolId]="rolId" *ngIf="currentCustomer && !ready && !error"></customer-player>
 
 <fury-scrollbar class="dashboard" furyPage furyPagePadding fxLayout="column" *ngIf="(ready  && !error) || _showDetails">
     <div furyScrollbar #contentScroll [ngClass]="{'customerDetail': !ready}">
         <div class="content" fxLayout="column" fxLayoutGap="24px">
             <!--<div *ngIf="ready  && !error && currentCustomer"> -->
             <div style="text-align:right;font-size: xx-large;">
-                <!--<label *ngIf="temporizadorActive">Tiempo restante: {{labelTemporizador}}</label>-->
+                <label *ngIf="temporizadorActive">Tiempo restante: {{labelTemporizador}}</label>
+                <label *ngIf="temporizadorCortoActive">Tiempo restante: {{labelTemporizadorCorto}}</label>
+                <label *ngIf="optionTemporizadorActive">Selecccione el resultado: {{optionLabelTemporizador}}</label>
             </div>
             <div *ngIf="currentCustomer">
                 <event-customer [customer-id]="currentCustomer.id" [idsPayment]="idsPayment" [timerActive]="timerActive"
-                    [index-current-phone]="indexCurrentPhone"></event-customer>
+                    [index-current-phone]="indexCurrentPhone" [call_flag]="callFlag"></event-customer>
             </div>
             <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="16px">
                 <div [fxFlex]="customers&&customers.length>1&&isMoraTardia()?'75%':'100%'">
@@ -38,3 +40,17 @@
         </div>
     </div>
 </fury-scrollbar>
+<ng-template #callAPIDialog>
+    <h2 matDialogTitle>¿Desea realizar otra llamada al mismo cliente?</h2>
+    <mat-dialog-actions align="end">
+        <button mat-button matDialogClose="no">Cancelar</button>
+        <button cdkFocusInitial mat-button matDialogClose="yes">Aceptar</button>
+    </mat-dialog-actions>
+</ng-template>
+<ng-template #callAPIInactive>
+    <h2 matDialogTitle>¿Su llamada ya ha finalizado?</h2>
+    <mat-dialog-actions align="end">
+        <button mat-button cdkFocusInitial matDialogClose="no">No</button>
+        <button mat-button matDialogClose="yes">Si</button>
+    </mat-dialog-actions>
+</ng-template>

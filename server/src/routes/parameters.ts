@@ -21,6 +21,7 @@ export class ParametersRoute extends MainRoute {
         router.post("/endingCall", parameterController.endingCall);
         router.post("/initCall", parameterController.initCall);
         router.post("/lastCall", parameterController.getLastCall);
+        router.post("/updateLastCall", parameterController.updateLastCall);
         router.post("/getAgentByPhone", parameterController.getAgentByTelephone);
 
         return router;

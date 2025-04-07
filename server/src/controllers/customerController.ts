@@ -2,6 +2,7 @@ import * as express from 'express';
 // import csv from 'fast-csv';
 // import fs from 'fs';
 import request from 'request';
+import { AwaitedCall } from '../../../datatypes/awaitedCall';
 import { Call } from '../../../datatypes/call';
 import { ClientEvent } from '../../../datatypes/clientEvent';
 import { Customer } from '../../../datatypes/Customer';
@@ -16,6 +17,7 @@ import { CallModel } from '../models/callModel';
 import { CustomerModel } from '../models/customerModel';
 import { EventModel } from '../models/eventModel';
 import { Entity, ImportModel } from '../models/importModel';
+import { ParameterModel } from '../models/parameters';
 import { QueueModel } from '../models/queueModel';
 import { UserModel } from '../models/userModel';
 import { IConnection, IPromiseConnection, MainController } from './mainController';
@@ -33,7 +35,8 @@ export class CustomerController extends MainController {
     private importModel: ImportModel;
     private countDept: number = 0;
     private countDeptD: number = 0;
-
+    private parameterModel: ParameterModel;
+    private connection: any;
     constructor(masterDBController: ControllerDBMaster,
         controllerConnections: ControllerDBClientsConnections,
         controllerPromiseConnections: ControllerDBClientsPromiseConnections,
@@ -47,6 +50,8 @@ export class CustomerController extends MainController {
         this.callModel = new CallModel(controllerConnections);
         this.eventModel = new EventModel();
         this.importModel = new ImportModel();
+        this.parameterModel = new ParameterModel(controllerConnections);
+
     }
 
     public allCustomers = (req: express.Request, httpRes: express.Response): void => {
@@ -610,6 +615,19 @@ export class CustomerController extends MainController {
                     const eventRedirection: string = req.body.customerEvent.eventRedirection;
                     let idUser: number = result.data[0].id;
                     let extension = event.ext;
+
+                    if (req.body.customerEvent.flag !== 'undefined' && !req.body.customerEvent.flag) {
+                        this.connection = this.masterDBController.getMasterConnection().getConnection();
+                        let awaitedC: AwaitedCall = new AwaitedCall();
+                        awaitedC.customerId = event.idCustomer.toString();
+                        awaitedC.destination = event.phone;
+                        awaitedC.source = extension;
+
+                        this.parameterModel.addCallAwaited(awaitedC, this.connection, (result: any) => {
+
+                        });
+                    }
+
 
                     this.callModel.getLastCall(idUser, extension, con, (lastCall: ResultWithData<Call>) => {
                         const withoutPhone: boolean = result.data[0].withoutPhone;
