@@ -1,3 +1,4 @@
+
 import { Result, ResultCode, ResultError, ResultWithData } from '../../../datatypes/result';
 var SqlString = require('sqlstring');
 var moment = require('moment');
@@ -140,16 +141,29 @@ export class MainModel {
     // TODO: revisar que esta convirtiendo bien
     //
     //
-    protected formatDateSql(date: Date): string | null {
-        if (!date) {
+   protected formatDateSql(date: Date): string | null {
+	if (!date) {
             return null;
         }
         return moment(date).format("YYYY-MM-DD");
     }
 
-    protected replaceUnescapeableChars(s: string): string {
-        return s.replace(/[^\x00-\x7F]/g, "");
+
+
+    //protected replaceUnescapeableChars(s: string): string {
+       //return s.replace(/[^\x00-\x7F]/g, "");
+    //}
+
+    
+    protected replaceUnescapeableChars(s: string | null): string {
+    if (s === null || typeof s === 'undefined') {
+        return "";
     }
+    return s.replace(/[^\x00-\x7F]/g, "");
+
+    }
+	
+
 }
 
 export interface SqlError {

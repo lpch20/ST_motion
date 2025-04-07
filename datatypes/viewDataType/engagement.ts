@@ -8,7 +8,10 @@ export class Engagement {
     agreedDebt: number = 0;
     initialDelivery: number = 0;
     idBranchOffice: number = 0;
-    callAgain: Date = new Date()
+    callAgain: Date = new Date();
     annotation: string = "";
     phoneNumber: string = "";
-}
+    rate: string = "";
+    portfolio: string = "";
+  }
+  

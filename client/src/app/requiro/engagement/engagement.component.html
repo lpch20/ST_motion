@@ -1,123 +1,256 @@
 <mat-card>
-
-  <mat-card-title> Compromisos
-  </mat-card-title>
+  <mat-card-title> Compromisos </mat-card-title>
 
   <mat-form-field *ngIf="_users && supervisorView">
     <mat-select placeholder="Usuario" [(ngModel)]="selectedUserId">
-      <mat-option [value]="u.id" *ngFor="let u of _users">{{u.firstname}} {{u.lastname}}</mat-option>
+      <mat-option [value]="u.id" *ngFor="let u of _users"
+        >{{ u.firstname }} {{ u.lastname }}</mat-option
+      >
     </mat-select>
   </mat-form-field>
   <mat-form-field>
-    <input matInput [matDatepicker]="pickerFromEngagement" [(ngModel)]="dateFrom" placeholder="Fecha desde"
-      [formControl]="dateFromCtrl">
-    <mat-datepicker-toggle matSuffix [for]="pickerFromEngagement"></mat-datepicker-toggle>
+    <input
+      matInput
+      [matDatepicker]="pickerFromEngagement"
+      [(ngModel)]="dateFrom"
+      placeholder="Fecha desde"
+      [formControl]="dateFromCtrl"
+    />
+    <mat-datepicker-toggle
+      matSuffix
+      [for]="pickerFromEngagement"
+    ></mat-datepicker-toggle>
     <mat-datepicker #pickerFromEngagement></mat-datepicker>
   </mat-form-field>
   <mat-form-field>
-    <input matInput [matDatepicker]="pickerToEngagement" [(ngModel)]="dateTo" placeholder="Fecha hasta" [formControl]="dateToCtrl">
-    <mat-datepicker-toggle matSuffix [for]="pickerToEngagement"></mat-datepicker-toggle>
+    <input
+      matInput
+      [matDatepicker]="pickerToEngagement"
+      [(ngModel)]="dateTo"
+      placeholder="Fecha hasta"
+      [formControl]="dateToCtrl"
+    />
+    <mat-datepicker-toggle
+      matSuffix
+      [for]="pickerToEngagement"
+    ></mat-datepicker-toggle>
     <mat-datepicker #pickerToEngagement></mat-datepicker>
   </mat-form-field>
 
-  <button mat-raised-button color="primary" (click)="searchEngagement()" *ngIf="dateFromCtrl.status !== 'INVALID' && dateToCtrl.status !== 'INVALID'">Enviar</button>
-  <button mat-raised-button color="primary" *ngIf="dateFromCtrl.status === 'INVALID' || dateToCtrl.status === 'INVALID'"
-    disabled>Enviar</button>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="searchEngagement()"
+    *ngIf="dateFromCtrl.status !== 'INVALID' && dateToCtrl.status !== 'INVALID'"
+  >
+    Enviar
+  </button>
+  <button
+    mat-raised-button
+    color="primary"
+    *ngIf="dateFromCtrl.status === 'INVALID' || dateToCtrl.status === 'INVALID'"
+    disabled
+  >
+    Enviar
+  </button>
 
   <button mat-raised-button (click)="exportCSV()">
     Exportar a CSV
-    <i class="material-icons">
-      trending_up
-    </i>
+    <i class="material-icons"> trending_up </i>
   </button>
 
   <div [hidden]="showDetail">
-    <mat-table #table [dataSource]="dataSource" class="table table-hover table-striped" style="text-align: center;">
+    <mat-table
+      [dataSource]="dataSource"
+      class="table table-hover table-striped"
+      style="text-align: center"
+    >
+      <!-- Columna seleccionada -->
       <ng-container matColumnDef="selected">
         <mat-header-cell *matHeaderCellDef></mat-header-cell>
         <mat-cell *matCellDef="let element">
           <mat-checkbox [(ngModel)]="element.active"></mat-checkbox>
         </mat-cell>
       </ng-container>
+
+      <!-- Columna Fecha -->
       <ng-container matColumnDef="date">
-        <mat-header-cell *matHeaderCellDef> Fecha </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{ element.engagements[0].date | date :'dd/MM/yyyy HH:mm'}}Hs </mat-cell>
-      </ng-container>
-      <ng-container matColumnDef="result">
-        <mat-header-cell *matHeaderCellDef> Resultado </mat-header-cell>
+        <mat-header-cell *matHeaderCellDef>Fecha</mat-header-cell>
         <mat-cell *matCellDef="let element">
-          <span [innerHTML]="getEventTypeIcon(element.engagements[0].eventType)"></span>
+          {{ element.engagements[0].date | date : "dd/MM/yyyy HH:mm" }}Hs
         </mat-cell>
       </ng-container>
-      <ng-container matColumnDef="ci">
-        <mat-header-cell *matHeaderCellDef> Cédula</mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.engagements[0].ci}}</mat-cell>
-      </ng-container>
-      <ng-container matColumnDef="customer">
-        <mat-header-cell *matHeaderCellDef> Cliente </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.engagements[0].names}} {{element.engagements[0].lastnames}}</mat-cell>
-      </ng-container>
-      <ng-container matColumnDef="paymentPromiseDate">
-        <mat-header-cell *matHeaderCellDef> Fecha de promesa de pago </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.engagements[0].paymentPromiseDate | date:'dd/MM/yyyy'}}</mat-cell>
-      </ng-container>
-      <ng-container matColumnDef="numberOfFees">
-        <mat-header-cell *matHeaderCellDef> Cantidad de cuotas </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.engagements[0].numberOfFees}}</mat-cell>
-      </ng-container>
-      <ng-container matColumnDef="amountFees">
-        <mat-header-cell *matHeaderCellDef> Importe de la cuota </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.engagements[0].amountFees}}</mat-cell>
-      </ng-container>
-      <ng-container matColumnDef="agreedDebt">
-        <mat-header-cell *matHeaderCellDef> Deuda acordada </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.engagements[0].agreedDebt}}</mat-cell>
-      </ng-container>
-      <ng-container matColumnDef="initialDelivery">
-        <mat-header-cell *matHeaderCellDef> Entrega inicial </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.engagements[0].initialDelivery }}</mat-cell>
-      </ng-container>
-      <ng-container matColumnDef="idBranchOffice">
-        <mat-header-cell *matHeaderCellDef> Sucursal </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{getBranchOfficeById(element.engagements[0].idBranchOffice)}}</mat-cell>
-      </ng-container>
-      <ng-container matColumnDef="agent">
-        <mat-header-cell *matHeaderCellDef> Agente </mat-header-cell>
-        <mat-cell *matCellDef="let element">{{getUsernameByUserId(element.engagements[0].idUser)}}</mat-cell>
-      </ng-container>
-      <ng-container matColumnDef="agentName">
-        <mat-header-cell *matHeaderCellDef> Nombre de agente </mat-header-cell>
-        <mat-cell *matCellDef="let element">{{getNameByUserId(element.engagements[0].idUser)}}</mat-cell>
-      </ng-container>
-      <ng-container matColumnDef="dateReminder">
-        <mat-header-cell *matHeaderCellDef> Llamar de nuevo </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.engagements[0].dateReminder | date:'dd/MM/yyyy HH:mm'}}Hs</mat-cell>
-      </ng-container>
-      <ng-container matColumnDef="message">
-        <mat-header-cell *matHeaderCellDef> Comentario </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.engagements[0].message}}</mat-cell>
-      </ng-container>
-      <ng-container matColumnDef="countEngagement">
-        <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+
+      <!-- Columna Resultado -->
+      <ng-container matColumnDef="result">
+        <mat-header-cell *matHeaderCellDef>Resultado</mat-header-cell>
         <mat-cell *matCellDef="let element">
-          <button mat-mini-fab color="primary" style="width: 40px;" *ngIf="element.engagements.length > 1" (click)="setCustomerEngagementDetail(element.engagements)">
-            {{element.engagements.length}}
+          <span
+            [innerHTML]="getEventTypeIcon(element.engagements[0].eventType)"
+          ></span>
+        </mat-cell>
+      </ng-container>
+
+      <!-- Columna Cédula -->
+      <ng-container matColumnDef="ci">
+        <mat-header-cell *matHeaderCellDef>Cédula</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.engagements[0].ci }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Columna Cliente -->
+      <ng-container matColumnDef="customer">
+        <mat-header-cell *matHeaderCellDef>Cliente</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.engagements[0].names }}
+          {{ element.engagements[0].lastnames }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Columna Fecha de promesa de pago -->
+      <ng-container matColumnDef="paymentPromiseDate">
+        <mat-header-cell *matHeaderCellDef
+          >Fecha de promesa de pago</mat-header-cell
+        >
+        <mat-cell *matCellDef="let element">
+          {{ element.engagements[0].paymentPromiseDate | date : "dd/MM/yyyy" }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Columna Cantidad de cuotas -->
+      <ng-container matColumnDef="numberOfFees">
+        <mat-header-cell *matHeaderCellDef>Cantidad de cuotas</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.engagements[0].numberOfFees }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Columna Importe de la cuota -->
+      <ng-container matColumnDef="amountFees">
+        <mat-header-cell *matHeaderCellDef>Importe de la cuota</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.engagements[0].amountFees }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Columna Deuda acordada -->
+      <ng-container matColumnDef="agreedDebt">
+        <mat-header-cell *matHeaderCellDef>Deuda acordada</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.engagements[0].agreedDebt }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Columna Entrega inicial -->
+      <ng-container matColumnDef="initialDelivery">
+        <mat-header-cell *matHeaderCellDef>Entrega inicial</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.engagements[0].initialDelivery }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Columna Tasa: IMPORTANTE: usar "rate" en minúsculas para que coincida -->
+      <ng-container matColumnDef="rate">
+        <mat-header-cell *matHeaderCellDef>Tasa</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.engagements[0].rate ? element.engagements[0].rate : "" }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="portfolio">
+        <mat-header-cell *matHeaderCellDef>Cartera</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{
+            element.engagements[0].portfolio
+              ? element.engagements[0].portfolio
+              : ""
+          }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Columna Sucursal -->
+      <ng-container matColumnDef="idBranchOffice">
+        <mat-header-cell *matHeaderCellDef>Sucursal</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ getBranchOfficeById(element.engagements[0].idBranchOffice) }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Columna Agente -->
+      <ng-container matColumnDef="agent">
+        <mat-header-cell *matHeaderCellDef>Agente</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ getUsernameByUserId(element.engagements[0].idUser) }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Columna Nombre de agente -->
+      <ng-container matColumnDef="agentName">
+        <mat-header-cell *matHeaderCellDef>Nombre de agente</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ getNameByUserId(element.engagements[0].idUser) }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Columna Llamar de nuevo -->
+      <ng-container matColumnDef="dateReminder">
+        <mat-header-cell *matHeaderCellDef>Llamar de nuevo</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{
+            element.engagements[0].dateReminder | date : "dd/MM/yyyy HH:mm"
+          }}Hs
+        </mat-cell>
+      </ng-container>
+
+      <!-- Columna Comentario -->
+      <ng-container matColumnDef="message">
+        <mat-header-cell *matHeaderCellDef>Comentario</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.engagements[0].message }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Columna de cantidad de compromisos -->
+      <ng-container matColumnDef="countEngagement">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <button
+            mat-mini-fab
+            color="primary"
+            style="width: 40px"
+            *ngIf="element.engagements.length > 1"
+            (click)="setCustomerEngagementDetail(element.engagements)"
+          >
+            {{ element.engagements.length }}
           </button>
         </mat-cell>
       </ng-container>
+
+      <!-- Columna para indicar compromiso nuevo -->
       <ng-container matColumnDef="newEngagement">
-        <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
         <mat-cell *matCellDef="let element">
-          <i class="material-icons" *ngIf="isNewEngagement(element.engagements)">new_releases</i>
+          <i
+            class="material-icons"
+            *ngIf="isNewEngagement(element.engagements)"
+          >
+            new_releases
+          </i>
         </mat-cell>
       </ng-container>
-      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-    </mat-table>
-    <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" [showFirstLastButtons]="true">
-    </mat-paginator>
-  </div>
 
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    </mat-table>
+
+    <mat-paginator
+      #paginator
+      [pageSize]="5"
+      [pageSizeOptions]="[5, 10, 20]"
+      [showFirstLastButtons]="true"
+    ></mat-paginator>
+  </div>
 
   <div *ngIf="engagaments && engagaments.length > 0">
     <!--
@@ -166,7 +299,8 @@
 
       <mat-card>
         <mat-card-header>
-          {{customerEngagamentsDetail[0].names}} {{customerEngagamentsDetail[0].lastnames}}
+          {{ customerEngagamentsDetail[0].names }}
+          {{ customerEngagamentsDetail[0].lastnames }}
         </mat-card-header>
         <mat-card-content>
           <table class="table table-hover table-striped" fxFlex>
@@ -180,30 +314,35 @@
               <td>Entrega inicial:</td>
               <td>Sucursal</td>
               <td>Llamar de nuevo</td>
+              <td>Tasa</td>
               <td>Comentario:</td>
             </tr>
             <tr *ngFor="let e of customerEngagamentsDetail">
-              <td>{{e.date| date:'dd/MM/yyyy'}}Hs</td>
+              <td>{{ e.date | date : "dd/MM/yyyy" }}Hs</td>
               <td>
                 <span [innerHTML]="getEventTypeIcon(e.eventType)"></span>
               </td>
-              <td>{{e.paymentPromiseDate | date:'dd/MM/yyyy'}}</td>
-              <td>{{e.numberOfFees}}</td>
-              <td>{{e.amountFees}}</td>
-              <td>{{e.agreedDebt}}</td>
-              <td>{{e.initialDelivery}}</td>
-              <td>{{getBranchOfficeById(e.idBranchOffice)}}</td>
-              <td>{{e.dateReminder | date:'dd/MM/yyyy HH:mm'}}Hs</td>
-              <td>{{e.message}}</td>
+              <td>{{ e.paymentPromiseDate | date : "dd/MM/yyyy" }}</td>
+              <td>{{ e.numberOfFees }}</td>
+              <td>{{ e.amountFees }}</td>
+              <td>{{ e.agreedDebt }}</td>
+              <td>{{ e.initialDelivery }}</td>
+              <td>{{ getBranchOfficeById(e.idBranchOffice) }}</td>
+              <td>{{ e.dateReminder | date : "dd/MM/yyyy HH:mm" }}Hs</td>
+              <td>{{ e.rate }}</td>
+              <td>{{ e.message }}</td>
             </tr>
           </table>
         </mat-card-content>
       </mat-card>
     </div>
-
   </div>
-  <div *ngIf="engagaments && engagaments.length === 0" style="margin-top: 50px;width: 100%; text-align: center;">
-    <span class="mat-display-1" style="margin: 100px;">No existen datos para las fechas seleccionadas.</span>
+  <div
+    *ngIf="engagaments && engagaments.length === 0"
+    style="margin-top: 50px; width: 100%; text-align: center"
+  >
+    <span class="mat-display-1" style="margin: 100px"
+      >No existen datos para las fechas seleccionadas.</span
+    >
   </div>
-
 </mat-card>

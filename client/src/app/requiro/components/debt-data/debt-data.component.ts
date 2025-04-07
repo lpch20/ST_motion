@@ -25,12 +25,16 @@ export class DebtDataComponent {
   @Input() debts: DebtData[];
   payments: PaymentData[];
   agreements: AgreementData[];
-
+  accountId: number;
+			
   constructor(private customerService: CustomersService) {
     this.showData = true;
   }
 
-  ngOnInit() {
+   ngOnInit() {
+    // Obtener accountId desde el localStorage y convertirlo en número
+    const storedAccountId = localStorage.getItem("accountId");
+    this.accountId = storedAccountId ? parseInt(storedAccountId, 10) : null;
   }
 
   get customerId(): number {

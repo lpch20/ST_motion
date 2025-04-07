@@ -24,7 +24,7 @@
                         <b>$ Orden:</b> {{debt.amountOrderPesos}}
                     </td>
                     <td>
-                        <b>$ Tarjeta:</b> {{debt.amountCreditCardPesos}}
+                        <b>$ Tarjeta:</b> {{"$" + debt.amountCreditCardPesos}}
                     </td>
                     <td>
                         <b>Atr O:</b> {{debt.delayOrder}}
@@ -32,10 +32,10 @@
                 </tr>
                 <tr>
                     <td>
-                        <b>Amnistia:</b>
+                        <b>Amnistia:</b>{{ debt.haveAmnesty ? "Si" : "No" }}				
                     </td>
                     <td>
-                        <b>$ Amnistia:</b> {{debt.amountAmnestyPesos}}
+                        <b>$ Amnistia:</b> {{"$" + debt.amountAmnestyPesos}}
                     </td>
                     <td>
                         <b>Atr Amn:</b> {{debt.delayAmnesty}}
@@ -44,19 +44,19 @@
                     <td style="color: red;">
                         <span
                             *ngIf="(debt.delayCreditCard > 1080 || debt.delayOrder > 1080) && debt.minimumToCharge > 5">
-                            <b>Mínimo a cobrar:</b> {{debt.minimumToCharge * 1.15 | number: '1.0-2'}}
+                            <b>Mínimo a cobrar:</b> {{"$" + debt.minimumToCharge * 1.15 | number: '1.0-2'}}
                         </span>
                         <span *ngIf="debt.delayCreditCard < 1080 && debt.delayOrder < 1080">
-                            <b>Mínimo a cobrar:</b> {{debt.minimumToCharge}}
+                            <b>Mínimo a cobrar:</b> {{"$" + debt.minimumToCharge}}
                         </span>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <b>Mínimo a cobrar:</b> {{debt.minimumToCharge}}
+                        <b>Mínimo a cobrar:</b> {{"$" + debt.minimumToCharge}}
                     </td>
                     <td>
-                        <b>Máximo a cobrar:</b> {{debt.maxToCharge}}
+                        <b>Máximo a cobrar:</b> {{"$" + debt.maxToCharge}}
                     </td>
                     <td>
                         <b>Cantidad total de cuotas de
@@ -67,6 +67,65 @@
                             <br />amnistía no pagas:</b> {{debt.totalFeesAmnesty}}
                     </td>
                 </tr>
+              <tr *ngIf="accountId === 2">
+          <td
+            style="color: red"
+            ng-if="
+              debt.specialDebt &&
+              debt.specialDebt !== 'null' &&
+              debt.specialDebt !== 'undefined' &&
+              debt.specialDebt !== ''
+            "
+          >
+            <b>PLAN ESPECIAL:</b> {{ "$" + debt.specialDebt }}
+          </td>
+          <td
+            style="color: red"
+            ng-if="
+              debt.specialDebt &&
+              debt.specialDebt !== 'null' &&
+              debt.specialDebt !== 'undefined' &&
+              debt.specialDebt !== ''
+            "
+          >
+            <b>PLAN CAPITAL 1 B:</b> {{ "$" + debt.capitalPlan_1B }}
+          </td>
+          <td
+            style="color: red"
+            ng-if="
+              debt.specialDebt &&
+              debt.specialDebt !== 'null' &&
+              debt.specialDebt !== 'undefined' &&
+              debt.specialDebt !== ''
+            "
+          >
+            <b>PLAN CAPITAL II:</b> {{ "$" + debt.capitalPlan_II }}
+          </td>
+          <td
+            style="color: red"
+            ng-if="
+              debt.specialDebt &&
+              debt.specialDebt !== 'null' &&
+              debt.specialDebt !== 'undefined' &&
+              debt.specialDebt !== ''
+            "
+          >
+            <b>PLAN AMNISTIA:</b> {{ "$" + debt.amnistiaPlan }}
+          </td>
+        </tr>	
+        <tr *ngIf="accountId === 2">
+          <td
+            style="color: red"
+            ng-if="
+              debt.specialDebt &&
+              debt.specialDebt !== 'null' &&
+              debt.specialDebt !== 'undefined' &&
+              debt.specialDebt !== ''
+            "
+          >
+            <b>PROG. REESTRUCTURA:</b> {{ "$" + debt.reestructura }}
+          </td>
+        </tr>
             </table>
         </mat-tab>
 
