@@ -1,0 +1,17 @@
+/*COMO SE LEVANTA EL CLIENTE*/
+
+-----------------------------------------------------------
+
+1- clonar repositorio
+
+2- cambiar a node 12.22.12
+
+3- npm install
+
+4- instalar "angular5-csv": "^0.2.11"
+
+5- CAMBIAR LA IMPORTACION DE ANGULAR A: import { Angular5Csv } from "angular5-csv/dist/Angular5-csv";
+
+6- cambiar la dependencia angular-common a :   "@angular/common": "5.2.11".
+
+---------------------------------------------------------------

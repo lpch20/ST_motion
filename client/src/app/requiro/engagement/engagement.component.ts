@@ -6,7 +6,7 @@ import {
   ViewChild,
 } from "@angular/core";
 import { MatPaginator, MatSort, MatTableDataSource } from "@angular/material";
-import { Angular5Csv } from "angular5-csv/Angular5-csv";
+import { Angular5Csv } from "angular5-csv/dist/Angular5-csv";
 import * as moment from "moment";
 import { BranchOffice } from "../../../../../datatypes/BranchOffice";
 import { EventType } from "../../../../../datatypes/eventType";

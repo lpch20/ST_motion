@@ -238,13 +238,18 @@ export class EventCustomerComponent implements OnInit, OnChanges {
 
     // Configurar opciones según el valor de accountId
     if (this.accountId === 3) {
-      this.options = ["Temprana"];
+      this.options = ["No tiene", "Temprana"];
       // Si deseas que se seleccione por defecto la opción:
-      this.newEngagement.portfolio = "Temprana"; // Asegúrate de que el tipo concuerde
+      this.newEngagement.portfolio = "No tiene"; // Asegúrate de que el tipo concuerde
     } else if (this.accountId === 2) {
-      this.options = ["Plan Capital I", "Plan Capital II", "Mora Tardía"];
+      this.options = [
+        "No tiene",
+        "Plan Capital I",
+        "Plan Capital II",
+        "Mora Tardía",
+      ];
       // Por ejemplo, seleccionar la primera opción por defecto
-      this.newEngagement.portfolio = "Plan Capital I";
+      this.newEngagement.portfolio = "No tiene";
     }
 
     this.mainCallData.currentCustomer.subscribe(
