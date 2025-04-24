@@ -410,7 +410,7 @@ export class CustomerModel extends MainModel {
                         if (resultQuery.length > 0) {
 
                             let c = new Customer(id, resultQuery[0].ci, resultQuery[0].names, resultQuery[0].lastnames,
-                                resultQuery[0].city, resultQuery[0].address, resultQuery[0].email, false, false);
+                                resultQuery[0].city, resultQuery[0].address, resultQuery[0].email,false, false, resultQuery[0].paymentIntention);
                             c.idDepartment = resultQuery[0].idDepartment;
                             c.idCity = resultQuery[0].idCity;
                             c.idCareer = resultQuery[0].idCareer;
@@ -525,11 +525,11 @@ export class CustomerModel extends MainModel {
                     if (!!err) {
                         this.errorModel(con, err, callBack);
                     } else {
-                        let QUERY: string = `INSERT INTO customer_events(idCustomer,idCampaign,idAction,idPay,phone,date,dateReminder,extension,operario,message,eventType,idUser,withoutPhone)
-                                                     VALUES(?,?,?,?,?,?,?,?,1,?,?,?,?)`;
+                        let QUERY: string = `INSERT INTO customer_events(idCustomer,idCampaign,idAction,idPay,phone,date,dateReminder,extension,operario,message,eventType,idUser,withoutPhone,paymentIntention)
+                                                     VALUES(?,?,?,?,?,?,?,?,1,?,?,?,?,?)`;
                         con.query(QUERY, [customerEvent.idCustomer, idCampaign, customerEvent.idAction, customerEvent.idPayment, customerEvent.phone,
                         super.formatDateTimeSql(customerEvent.date), super.formatDateTimeSql(customerEvent.dateReminder), customerEvent.ext,
-                        customerEvent.message, customerEvent.eventType, idUser, withoutPhone], (err: any, resultQueryComments: any) => {
+                        customerEvent.message, customerEvent.eventType, idUser, withoutPhone,customerEvent.paymentIntention], (err: any, resultQueryComments: any) => {
                             if (!!err) {
                                 this.errorModel(con, err, callBack);
                             } else {

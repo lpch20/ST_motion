@@ -632,6 +632,7 @@ export class CustomerController extends MainController {
                     this.callModel.getLastCall(idUser, extension, con, (lastCall: ResultWithData<Call>) => {
                         const withoutPhone: boolean = result.data[0].withoutPhone;
                         const idCampaign = req.body.customerEvent.idCampaign;
+
                         if (withoutPhone) {
                             this.customerModel.addEvent(eventRedirection, idCampaign, event, user, withoutPhone, con, (result) => {
                                 res.send(result);
@@ -639,7 +640,7 @@ export class CustomerController extends MainController {
                         } else {
                             // se valida que se haya hecho una llamada a ese customer en los ultimos 20 minutos
                             if (!!lastCall && lastCall.data && lastCall.data.idCustomer == event.idCustomer) {
-                                this.customerModel.addEvent(eventRedirection, idCampaign, event, user, withoutPhone, con, (result) => {
+                                this.customerModel.addEvent(eventRedirection, idCampaign, event, user, withoutPhone, con,  (result) => {
                                     this.customerModel.customerLastInteraction(event.idCustomer, con, (resultCustomerUpdate) => {
                                         // si coincide el telefono es el mejor caso 
                                         if (lastCall && lastCall.data && lastCall.data.tel == event.phone) {

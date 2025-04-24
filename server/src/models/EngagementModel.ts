@@ -89,9 +89,9 @@ export class EngagementModel extends MainModel {
   ): void {
     var mainThis = this;
     let QUERY: string =
-      "SELECT e.*,ce.*,c.names,c.lastnames, c.ci FROM customer_events ce INNER JOIN engagement e ON ce.id = e.idEvent ";
+      "SELECT e.*,ce.*,c.names,c.lastnames, c.ci FROM customer_events ce LEFT JOIN engagement e ON ce.id = e.idEvent ";
     QUERY +=
-      " INNER JOIN customer c ON ce.idCustomer = c.id WHERE ce.idCustomer = ? ORDER BY ce.date DESC";
+      " LEFT JOIN customer c ON ce.idCustomer = c.id WHERE ce.idCustomer = ? ORDER BY ce.date DESC";
     con.query(QUERY, [idCustomer], function (err: any, result: any[]) {
       if (!!err) {
         mainThis.errorModel(con, err, callBack);

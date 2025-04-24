@@ -21,5 +21,4 @@ export class MasterConnectionsBD {
 
   public getController(): ControllerDBMaster {
     return this.controller;
-  }
-}
+}}
