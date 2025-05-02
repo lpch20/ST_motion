@@ -2,7 +2,7 @@ import { ControllerDBClientsConnections } from "../motionLibJS/serverSide/master
 
 export class ClientConnectionsBD {
   private host: string = "127.0.0.1";
-  private port: number = 3306;
+  private port: number = 3308;
   private user: string = "root";
   private psw: string = "espanhaRoletti30!";
   private controller: ControllerDBClientsConnections;

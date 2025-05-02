@@ -2,7 +2,7 @@ import { ControllerDBMaster } from "../motionLibJS/serverSide/masterClientDBFram
 
 export class MasterConnectionsBD {
   private host: string = "127.0.0.1";
-  private port: number = 3306;
+  private port: number = 3308;
   private databaseName: string = "master_stmotion";
   private user: string = "root";
   private psw: string = "espanhaRoletti30!";
