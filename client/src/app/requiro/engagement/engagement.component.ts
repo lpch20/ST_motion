@@ -176,7 +176,7 @@ export class EngagementComponent
       decimalseparator: ".",
       showLabels: true,
     };
-
+  
     const data = new Array<{
       cliente: string;
       ci: string;
@@ -191,6 +191,8 @@ export class EngagementComponent
       portfolio: string;
       agentName: string;
     }>();
+  
+    // Encabezados
     data.push({
       ci: "CI",
       cliente: "Cliente",
@@ -205,33 +207,34 @@ export class EngagementComponent
       portfolio: "Cartera",
       agentName: "Nombre de agente",
     });
-
-    const dataToExport = this.engagamentsByCustomer.filter(
-      (e) => e.active === true
-    );
-    console.log(dataToExport);
+  
+    const dataToExport = this.engagamentsByCustomer.filter((e) => e.active === true);
+    
     for (let i = 0; i < dataToExport.length; i++) {
-      const line = dataToExport[i].engagements[0];
-      const d = new Date(line.paymentPromiseDate);
-      data.push({
-        ci: line.ci,
-        cliente: line.names + line.lastnames,
-        date: d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear(),
-        numberOfFees: line.numberOfFees,
-        amountFees: line.amountFees,
-        agreedDebt: line.agreedDebt,
-        initialDelivery: line.initialDelivery,
-        branchOffice: this.getBranchOfficeById(line.idBranchOffice),
-        agentName: this.getUsernameByUserId(line.idUser),
-        rate: line.rate ? line.rate : "",
-        portfolio: line.portfolio ? line.portfolio : "",
-        agent: this.getNameByUserId(line.idUser),
-      });
+      const engagements = dataToExport[i].engagements;
+      for (let j = 0; j < engagements.length; j++) {
+        const line = engagements[j];
+        const d = new Date(line.paymentPromiseDate);
+        data.push({
+          ci: line.ci,
+          cliente: line.names + " " + line.lastnames,
+          date: d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear(),
+          numberOfFees: line.numberOfFees,
+          amountFees: line.amountFees,
+          agreedDebt: line.agreedDebt,
+          initialDelivery: line.initialDelivery,
+          branchOffice: this.getBranchOfficeById(line.idBranchOffice),
+          agentName: this.getUsernameByUserId(line.idUser),
+          rate: line.rate ? line.rate : "",
+          portfolio: line.portfolio ? line.portfolio : "",
+          agent: this.getNameByUserId(line.idUser),
+        });
+      }
     }
-    //
+  
     new Angular5Csv(data, "Compromisos", options);
   }
-
+  
   private bindEngagement(response) {
     if (response.result > 0) {
       this.engagaments = response.data;
