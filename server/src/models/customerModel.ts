@@ -410,7 +410,7 @@ export class CustomerModel extends MainModel {
                         if (resultQuery.length > 0) {
 
                             let c = new Customer(id, resultQuery[0].ci, resultQuery[0].names, resultQuery[0].lastnames,
-                                resultQuery[0].city, resultQuery[0].address, resultQuery[0].email,false, false, resultQuery[0].paymentIntention);
+                                resultQuery[0].city, resultQuery[0].address, resultQuery[0].email,false, false, resultQuery[0].paymentIntention,resultQuery[0].debtorProposal);
                             c.idDepartment = resultQuery[0].idDepartment;
                             c.idCity = resultQuery[0].idCity;
                             c.idCareer = resultQuery[0].idCareer;
@@ -517,47 +517,59 @@ export class CustomerModel extends MainModel {
     }
 
     addEvent(eventRedirection: string, idCampaign: number, customerEvent: ClientEvent, user: string, withoutPhone: boolean, con: IQueryableConnection, callBack: (r: ResultWithData<{ id: number }>) => void): void {
-        this.userModel.getUserByUsername(user, con, (result: ResultWithData<any[]>) => {
-            if (result.data !== undefined && result.data.length > 0) {
-                var idUser = result.data[0].id;
-                let queryCampaign = "INSERT INTO customer_campaign(idCustomer,idCampaign,date,idUser) VALUE (?,?,NOW(),?)";
-                con.query(queryCampaign, [customerEvent.idCustomer, idCampaign, idUser], (err: any, resultQueryCampaign: any[]) => {
-                    if (!!err) {
-                        this.errorModel(con, err, callBack);
-                    } else {
-                        let QUERY: string = `INSERT INTO customer_events(idCustomer,idCampaign,idAction,idPay,phone,date,dateReminder,extension,operario,message,eventType,idUser,withoutPhone,paymentIntention)
-                                                     VALUES(?,?,?,?,?,?,?,?,1,?,?,?,?,?)`;
-                        con.query(QUERY, [customerEvent.idCustomer, idCampaign, customerEvent.idAction, customerEvent.idPayment, customerEvent.phone,
-                        super.formatDateTimeSql(customerEvent.date), super.formatDateTimeSql(customerEvent.dateReminder), customerEvent.ext,
-                        customerEvent.message, customerEvent.eventType, idUser, withoutPhone,customerEvent.paymentIntention], (err: any, resultQueryComments: any) => {
-                            if (!!err) {
-                                this.errorModel(con, err, callBack);
+    this.userModel.getUserByUsername(user, con, (result: ResultWithData<any[]>) => {
+        if (result.data !== undefined && result.data.length > 0) {
+            var idUser = result.data[0].id;
+            let queryCampaign = "INSERT INTO customer_campaign(idCustomer,idCampaign,date,idUser) VALUE (?,?,NOW(),?)";
+            con.query(queryCampaign, [customerEvent.idCustomer, idCampaign, idUser], (err: any, resultQueryCampaign: any[]) => {
+                if (!!err) {
+                    this.errorModel(con, err, callBack);
+                } else {
+                    let QUERY: string = `INSERT INTO customer_events(idCustomer,idCampaign,idAction,idPay,phone,date,dateReminder,extension,operario,message,eventType,idUser,withoutPhone,paymentIntention,debtorProposal)
+                                         VALUES(?,?,?,?,?,?,?,?,1,?,?,?,?,?,?)`;
+                    con.query(QUERY, [
+                        customerEvent.idCustomer,
+                        idCampaign,
+                        customerEvent.idAction,
+                        customerEvent.idPayment,
+                        customerEvent.phone,
+                        super.formatDateTimeSql(customerEvent.date),
+                        super.formatDateTimeSql(customerEvent.dateReminder),
+                        customerEvent.ext,
+                        customerEvent.message,
+                        customerEvent.eventType,
+                        idUser,
+                        withoutPhone,
+                        customerEvent.paymentIntention,
+                        customerEvent.debtorProposal
+                    ], (err: any, resultQueryComments: any) => {
+                        if (!!err) {
+                            this.errorModel(con, err, callBack);
+                        } else {
+                            if (idCampaign === 3 || customerEvent.eventType === 2 || eventRedirection == "OtherCustomer") {
+                                let queryUpdate = "UPDATE item_queue SET status = 'called' WHERE idCustomer = ?";
+                                con.query(queryUpdate, [customerEvent.idCustomer], (err: any, _1: any[]) => {
+                                    if (!!err) {
+                                        this.errorModel(con, err, callBack);
+                                    } else {
+                                        callBack({ result: ResultCode.OK, message: 'OK', data: { id: resultQueryComments.insertId } });
+                                    }
+                                });
                             } else {
-                                if (idCampaign === 3 || customerEvent.eventType === 2 || eventRedirection == "OtherCustomer") {
-                                    let queryUpdate = "UPDATE item_queue SET status = 'called' WHERE idCustomer = ?";
-                                    con.query(queryUpdate, [customerEvent.idCustomer], (err: any, _1: any[]) => {
-                                        if (!!err) {
-                                            this.errorModel(con, err, callBack);
-                                        } else {
-                                            callBack({ result: ResultCode.OK, message: 'OK', data: { id: resultQueryComments.insertId } });
-                                        }
-                                    });
-                                } else {
-                                    callBack({ result: ResultCode.OK, message: 'OK', data: { id: resultQueryComments.insertId } });
-                                }
+                                callBack({ result: ResultCode.OK, message: 'OK', data: { id: resultQueryComments.insertId } });
                             }
-                        });
-                    }
-                });
-            } else {
-                callBack({
-                    result: ResultCode.Error,
-                    message: 'Usuario no existe o no esta logeado'
-                });
-            }
-        });
-    }
-
+                        }
+                    });
+                }
+            });
+        } else {
+            callBack({
+                result: ResultCode.Error,
+                message: 'Usuario no existe o no esta logeado'
+            });
+        }
+    });
+}
     updateItemQueueStatus(idCustomer: number, status: string, con: any, callBack: (r: ResultWithData<{ id: number }>) => void): void {
         var mainThis = this;
         let queryUpdate = "UPDATE item_queue SET status = ? WHERE idCustomer = ?";

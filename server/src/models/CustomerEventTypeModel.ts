@@ -21,6 +21,7 @@ export class CustomerEventType extends MainModel {
                         mainThis.errorModel(con,err,callBack);
                     } else {
                         con.release();
+                        
                         callBack({
                             result: ResultCode.OK,
                             message: 'OK',
